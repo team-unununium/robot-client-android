@@ -1,3 +1,47 @@
 <resources>
     <string name="app_name">VR Robot</string>
+    <string name="settings">Settings</string>
+    <string name="back">Back</string>
+    <string name="info">Info</string>
+    <string name="temperature">Temperature</string>
+    <string name="gas_level">Gas Level</string>
+    <string name="obstacle">Obstacle</string>
+
+    <!-- Strings for Activity M1 -->
+    <string name="m1_request_permissions">Please allow the app to read and </string>
+
+    <!-- Strings for Activity L1 -->
+    <string name="l1_creator">Created by Team Unununium @ Hack &#38; Roll 2020</string>
+    <string name="l1_cardboard_repo">Code for Cardboard App</string>
+    <string name="l1_arduino_repo">Code for Arduino App</string>
+    <!-- Note to self: Only parse the license as HTML ONLY IF YOU HAVE THE TIME -->
+    <!--
+        Elevator music: https://www.youtube.com/watch?v=YBAmoSX7isw
+        Placeholder Video: https://www.youtube.com/watch?v=ScMzIvxBSi4
+        Default Temperature: https://www.flaticon.com/authors/monkik
+        Cold Temperature: https://www.flaticon.com/authors/monkik
+        Very Cold Temperature: https://www.flaticon.com/authors/freepik
+        Hot Temperature: https://www.flaticon.com/authors/freepik
+        Very Hot Temperature: https://www.flaticon.com/authors/those-icons
+        Obstacle Icon: https://www.flaticon.com/authors/eucalyp
+        Carbon Monoxide Icon: https://www.flaticon.com/authors/freepik
+        Methane Icon: https://www.flaticon.com/authors/freepik
+        LPG Icon: https://www.flaticon.com/authors/freepik
+        Hydrogen Icon: https://visualpharm.com/free-icons/header%202-595b40b75ba036ed117d7ee5
+    -->
+    <string name="l1_license">
+        Licenses used:
+        &#xD;&#xA; Kevin Macleod: Local Forecast- Elevator
+        &#xD;&#xA; BenMarquezTX: Placeholder Video
+        &#xD;&#xA; Default Temperature Icon: Monkik
+        &#xD;&#xA; Cold Temperature Icon: Freepik
+        &#xD;&#xA; Very Cold Temperature Icon: Freepik
+        &#xD;&#xA; Hot Temperature Icon: Freepik
+        &#xD;&#xA; Very Hot Temperature Icon: Those Icons
+        &#xD;&#xA; Obstacle Icon: Eucalyp
+        &#xD;&#xA; Carbon Monoxide Icon: Freepik
+        &#xD;&#xA; Methane Icon: Freepik
+        &#xD;&#xA; LPG Icon: Freepik
+        &#xD;&#xA; Hydrogen Icon: Icons8
+    </string>
 </resources>

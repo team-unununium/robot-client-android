@@ -1,18 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/button"
+    <android.opengl.GLSurfaceView
+        android:id="@+id/surface_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_gravity="top"/>
+
+    <!-- Default UiLayer layout that assumes landscape orientation !-->
+    <!-- The ui and settings button holders are 84dp. This is twice the size -->
+    <!-- of the button itself after padding (24dp image, 9dp padding twice). -->
+    <FrameLayout
+        android:id="@+id/m1_back_holder"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="84dp"
+        android:layout_height="84dp">
+        <ImageButton
+            style="@style/UiButton"
+            android:id="@+id/m1_back"
+            android:contentDescription="@string/back"
+            android:src="@drawable/ic_menu_close"
+            android:layout_gravity="start|top"/>
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/m1_alignment_marker"
+        android:layout_width="@dimen/alignment_marker_thickness"
+        android:layout_height="@dimen/alignment_marker_height"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/alignment_marker_color">
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/m1_btn_holder"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_width="42dp"
+        android:layout_height="84dp">
+        <ImageButton
+            style="@style/UiButton"
+            android:id="@+id/m1_settings"
+            android:contentDescription="@string/settings"
+            android:src="@drawable/ic_menu_settings"
+            android:layout_gravity="end|top" />
+        <ImageButton
+            style="@style/UiButton"
+            android:id="@+id/m1_info"
+            android:contentDescription="@string/info"
+            android:src="@drawable/ic_menu_info"
+            android:layout_gravity="end|bottom" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/m1_icons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginBottom="80dp"
+        android:layout_toStartOf="@+id/m1_alignment_marker">
+
+        <ImageView
+            android:id="@+id/m1_temp_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|top"
+            android:contentDescription="@string/temperature"
+            app:srcCompat="@drawable/ic_temp_default" />
+
+        <ImageView
+            android:id="@+id/m1_gas_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/gas_level"
+            app:srcCompat="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/m1_obstacle_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:contentDescription="@string/obstacle"
+            app:srcCompat="@android:color/transparent" />
+    </FrameLayout>
+</RelativeLayout>
