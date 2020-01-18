@@ -1,2 +1,6 @@
-include ':app'
+include ':app', ':samples:sdk-video360', ':samples:sdk-videoplayer', ':samples:sdk-controllerclient', ':samples:sdk-hellovr'
 rootProject.name='VR Robot'
+project(':samples:sdk-video360').projectDir = new File('libs/gvr-android-sdk-1.200/samples/sdk-video360')
+project(':samples:sdk-videoplayer').projectDir = new File('libs/gvr-android-sdk-1.200/samples/sdk-videoplayer')
+project(':samples:sdk-controllerclient').projectDir = new File('libs/gvr-android-sdk-1.200/samples/sdk-controllerclient')
+project(':samples:sdk-hellovr').projectDir = new File('libs/gvr-android-sdk-1.200/samples/sdk-hellovr')
