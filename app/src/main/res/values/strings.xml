@@ -1,19 +1,28 @@
 <resources>
     <string name="app_name">VR Robot</string>
+    <string name="blank" />
     <string name="settings">Settings</string>
     <string name="back">Back</string>
     <string name="info">Info</string>
     <string name="temperature">Temperature</string>
     <string name="gas_level">Gas Level</string>
+    <string name="front_obstacle">Front Obstacle</string>
+    <string name="back_obstacle">Back Obstacle</string>
     <string name="obstacle">Obstacle</string>
+    <string name="humidity">Humidity</string>
 
     <!-- Strings for Activity M1 -->
-    <string name="m1_request_permissions">Please allow the app to read and </string>
+    <string name="m1_request_permissions">Please allow the app to read and write on the device.</string>
+    <string name="m1_not_connected">You are not connected to the internet.</string>
+    <string name="m1_network_error">A network error has occurred.</string>
+    <string name="m1_processing_error">An error has occurred while processing the data.</string>
+    <string name="m1_internal_error">An internal error has occurred. The stack trace is </string>
 
     <!-- Strings for Activity L1 -->
     <string name="l1_creator">Created by Team Unununium @ Hack &#38; Roll 2020</string>
     <string name="l1_cardboard_repo">Code for Cardboard App</string>
     <string name="l1_arduino_repo">Code for Arduino App</string>
+    <string name="l1_server_repo">Code for Node.JS Server</string>
     <!-- Note to self: Only parse the license as HTML ONLY IF YOU HAVE THE TIME -->
     <!--
         Elevator music: https://www.youtube.com/watch?v=YBAmoSX7isw
@@ -28,6 +37,9 @@
         Methane Icon: https://www.flaticon.com/authors/freepik
         LPG Icon: https://www.flaticon.com/authors/freepik
         Hydrogen Icon: https://visualpharm.com/free-icons/header%202-595b40b75ba036ed117d7ee5
+        Low Humidity: https://www.flaticon.com/authors/iconixar
+        Medium Humidity: https://www.flaticon.com/authors/good-ware
+        High Humidity: https://www.flaticon.com/authors/freepik
     -->
     <string name="l1_license">
         Licenses used:
@@ -43,5 +55,8 @@
         &#xD;&#xA; Methane Icon: Freepik
         &#xD;&#xA; LPG Icon: Freepik
         &#xD;&#xA; Hydrogen Icon: Icons8
+        &#xD;&#xA; Low Humidity Icon: Iconixar
+        &#xD;&#xA; Medium Humidity Icon: Good Ware
+        &#xD;&#xA; High Humidity Icon: Freepik
     </string>
 </resources>

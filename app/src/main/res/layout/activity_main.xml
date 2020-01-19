@@ -5,26 +5,47 @@
     android:layout_height="match_parent">
 
     <android.opengl.GLSurfaceView
-        android:id="@+id/surface_view"
+        android:id="@+id/m1_footage"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="top"/>
+        android:layout_height="fill_parent" />
 
     <!-- Default UiLayer layout that assumes landscape orientation !-->
     <!-- The ui and settings button holders are 84dp. This is twice the size -->
     <!-- of the button itself after padding (24dp image, 9dp padding twice). -->
-    <FrameLayout
-        android:id="@+id/m1_back_holder"
+
+    <Button
+        android:id="@+id/m1_touch_btn"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="280dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="280dp"
+        android:layout_marginBottom="200dp"
+        android:background="@android:color/transparent"
+        android:foregroundGravity="center"
+        android:text="@string/blank" />
+
+    <FrameLayout
+        android:id="@+id/m1_back_holder"
         android:layout_width="84dp"
-        android:layout_height="84dp">
+        android:layout_height="84dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="647dp">
+
         <ImageButton
-            style="@style/UiButton"
             android:id="@+id/m1_back"
+            style="@style/UiButton"
+            android:layout_gravity="start|top"
             android:contentDescription="@string/back"
-            android:src="@drawable/ic_menu_close"
-            android:layout_gravity="start|top"/>
+            android:src="@drawable/ic_menu_close" />
     </FrameLayout>
 
     <RelativeLayout
@@ -41,23 +62,17 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         android:layout_width="42dp"
-        android:layout_height="84dp">
-        <ImageButton
-            style="@style/UiButton"
-            android:id="@+id/m1_settings"
-            android:contentDescription="@string/settings"
-            android:src="@drawable/ic_menu_settings"
-            android:layout_gravity="end|top" />
+        android:layout_height="42dp">
         <ImageButton
             style="@style/UiButton"
             android:id="@+id/m1_info"
             android:contentDescription="@string/info"
             android:src="@drawable/ic_menu_info"
-            android:layout_gravity="end|bottom" />
+            android:layout_gravity="end|top" />
     </FrameLayout>
 
     <FrameLayout
-        android:id="@+id/m1_icons"
+        android:id="@+id/m1_left_icons"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -81,15 +96,54 @@
             android:id="@+id/m1_gas_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:contentDescription="@string/gas_level"
             app:srcCompat="@android:color/transparent" />
 
         <ImageView
-            android:id="@+id/m1_obstacle_icon"
+            android:id="@+id/m1_humidity_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
+            android:layout_gravity="bottom|center"
+            android:contentDescription="@string/humidity"
+            app:srcCompat="@drawable/ic_humidity_medium" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/m1_right_icons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="120dp"
+        android:layout_marginTop="80dp"
+        android:layout_marginEnd="120dp"
+        android:layout_marginBottom="80dp"
+        android:layout_toEndOf="@+id/m1_alignment_marker">
+
+        <ImageView
+            android:id="@+id/m1_front_obstacle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center"
+            android:contentDescription="@string/front_obstacle"
+            app:srcCompat="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/m1_obstacle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:contentDescription="@string/obstacle"
+            app:srcCompat="@android:color/transparent" />
+
+        <ImageView
+            android:id="@+id/m1_back_obstacle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|end"
+            android:contentDescription="@string/back_obstacle"
             app:srcCompat="@android:color/transparent" />
     </FrameLayout>
 </RelativeLayout>
