@@ -41,7 +41,7 @@ dependencies {
     implementation 'io.socket:socket.io-client:1.0.0'
     implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     // Cardboard
-    implementation 'com.google.android.exoplayer:exoplayer:2.9.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.11.3'
     implementation 'com.google.android.exoplayer:extension-gvr:2.9.0'
     implementation 'com.google.vr:sdk-audio:1.190.0'
     implementation 'com.google.vr:sdk-base:1.190.0'
