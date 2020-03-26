@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     // Internet stuff
     implementation 'io.socket:socket.io-client:1.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.1'
     // Cardboard
     implementation 'com.google.android.exoplayer:exoplayer:2.9.0'
     implementation 'com.google.android.exoplayer:extension-gvr:2.9.0'
