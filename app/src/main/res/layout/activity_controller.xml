@@ -17,11 +17,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/> .
   -->
 
-<resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="darker_gray">#555</color>
-    <color name="alignment_marker_color">#b4b4b4</color>
-    <color name="white_transparent">#4cFFFFFF</color>
-</resources>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.unununium.vrclient.program.ControllerActivity">
+
+</androidx.constraintlayout.widget.ConstraintLayout>

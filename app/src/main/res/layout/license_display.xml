@@ -17,11 +17,29 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/> .
   -->
 
-<resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
-    <color name="darker_gray">#555</color>
-    <color name="alignment_marker_color">#b4b4b4</color>
-    <color name="white_transparent">#4cFFFFFF</color>
-</resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/m4"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:padding="10sp">
+
+    <TextView
+        android:id="@+id/m4_lib"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start"
+        android:text="@string/blank"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/m4_type"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end"
+        android:text="@string/blank"
+        android:textSize="20sp" />
+
+</LinearLayout>
