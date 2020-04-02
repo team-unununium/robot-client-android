@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 151sp converted from 24mm -->
-    <dimen name="alignment_marker_height">151sp</dimen>
-    <dimen name="alignment_marker_thickness">2dip</dimen>
-</resources>
