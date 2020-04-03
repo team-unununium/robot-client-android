@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-package com.unununium.vrclient;
+package com.unununium.vrclient.functions;
 
 import android.app.Activity;
 import android.content.Context;
@@ -33,9 +33,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.unununium.vrclient.BuildConfig;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -81,7 +84,7 @@ public class GeneralFunctions {
     }
 
     /** Check if network is connected **/
-    static boolean checkServerOnline(@NotNull Context context) {
+    public static boolean checkServerOnline(@NotNull Context context) {
         boolean isConnected = false;
         OkHttpClient client = new OkHttpClient();
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -126,5 +129,24 @@ public class GeneralFunctions {
                                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    /** For deleting the directory inside list of files and inner Directory.
+     * Placed here despite only used once as recursion is needed. **/
+    public static boolean deleteDir(@NotNull File dir) {
+        if (dir.isDirectory()) {
+            String[] children = dir.list();
+            if (children != null) {
+                for (String child : children) {
+                    boolean success = deleteDir(new File(dir, child));
+                    if (!success) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
     }
 }

@@ -19,6 +19,7 @@
 package com.unununium.vrclient.about;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,11 +27,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.unununium.vrclient.GeneralFunctions;
+import com.unununium.vrclient.functions.GeneralFunctions;
 import com.unununium.vrclient.R;
+import com.unununium.vrclient.functions.AutoDismissDialog;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -55,6 +56,10 @@ public class LicenseActivity extends AppCompatActivity {
                         .inflate(R.layout.license_display, null);
                 // Common functions used by all licenses for neatness
                 ((TextView) licenseDisplay.findViewById(R.id.m4_lib)).setText(infoArray[1]);
+                DialogInterface.OnClickListener[] yListeners = new DialogInterface
+                        .OnClickListener[]{null, (dialogInterface, i1) ->
+                        dialogInterface.dismiss(), null};
+                String[] buttonList = {"", getString(R.string.close), ""};
 
                 if (Objects.equals(infoArray[0], getString(R.string.license_apache_2))) {
                     // Apache 2.0 license
@@ -67,11 +72,9 @@ public class LicenseActivity extends AppCompatActivity {
                         GeneralFunctions.setHtml(licenseView,
                                 infoArray[2] + GeneralFunctions.getTxt(this,
                                         "apache_2_license.txt"));
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.license_apache_2)
-                                .setView(licenseView)
-                                .setNegativeButton(R.string.close, (dialog, i) -> dialog.dismiss())
-                                .create().show();
+                        new AutoDismissDialog(getString(R.string.license_apache_2), licenseView,
+                                buttonList, yListeners).show(getSupportFragmentManager(),
+                                "LicenseActivity.Apache2");
                     });
                 } else if (Objects.equals(infoArray[0], getString(R.string.license_mit))) {
                     // MIT license
@@ -84,11 +87,9 @@ public class LicenseActivity extends AppCompatActivity {
                         GeneralFunctions.setHtml(licenseView,
                                 infoArray[2] + GeneralFunctions.getTxt(this,
                                         "mit_license.txt"));
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.license_mit)
-                                .setView(licenseView)
-                                .setNegativeButton(R.string.close, (dialog, i) -> dialog.dismiss())
-                                .create().show();
+                        new AutoDismissDialog(getString(R.string.license_mit), licenseView,
+                                buttonList, yListeners).show(getSupportFragmentManager(),
+                                "LicenseActivity.MIT");
                     });
                 } else if (Objects.equals(infoArray[0], getString(R.string.license_cc_3_unported))) {
                     // Creative Commons CC 3.0 Unported
@@ -101,11 +102,9 @@ public class LicenseActivity extends AppCompatActivity {
                         GeneralFunctions.setHtml(licenseView,
                                 infoArray[2] + GeneralFunctions.getTxt(this,
                                         "cc_3_unported.txt"));
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.license_cc_3_unported)
-                                .setView(licenseView)
-                                .setNegativeButton(R.string.close, (dialog, i) -> dialog.dismiss())
-                                .create().show();
+                        new AutoDismissDialog(getString(R.string.license_cc_3_unported), licenseView,
+                                buttonList, yListeners).show(getSupportFragmentManager(),
+                                "LicenseActivity.CC3_Unported");
                     });
                 } else if (Objects.equals(infoArray[0], getString(R.string.license_gnu_gpl_v3))) {
                     // GNU GPL V3 License
@@ -118,11 +117,9 @@ public class LicenseActivity extends AppCompatActivity {
                         GeneralFunctions.setHtml(licenseView,
                                 infoArray[2] + GeneralFunctions.getTxt(this,
                                         "gnu_gpl_v3_license.txt"));
-                        new AlertDialog.Builder(this)
-                                .setTitle(R.string.license_gnu_gpl_v3)
-                                .setView(licenseView)
-                                .setNegativeButton(R.string.close, (dialog, i) -> dialog.dismiss())
-                                .create().show();
+                        new AutoDismissDialog(getString(R.string.license_gnu_gpl_v3), licenseView,
+                                buttonList, yListeners).show(getSupportFragmentManager(),
+                                "LicenseActivity.GNU_GPL_V3");
                     });
                 }
                 returnLayout.addView(licenseDisplay);

@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.unununium.vrclient.GeneralFunctions;
+import com.unununium.vrclient.functions.GeneralFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 

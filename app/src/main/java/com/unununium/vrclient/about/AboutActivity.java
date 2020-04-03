@@ -18,17 +18,18 @@
 
 package com.unununium.vrclient.about;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.unununium.vrclient.BuildConfig;
-import com.unununium.vrclient.GeneralFunctions;
+import com.unununium.vrclient.functions.GeneralFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
+import com.unununium.vrclient.functions.AutoDismissDialog;
 
 import java.util.Calendar;
 import java.util.Locale;
@@ -54,11 +55,10 @@ public class AboutActivity extends AppCompatActivity {
             startActivity(intent);
         });
         findViewById(R.id.m2_rss_license).setOnClickListener(view ->
-                new AlertDialog.Builder(this)
-                .setTitle(R.string.m2_rss_used)
-                .setMessage(R.string.l1_license)
-                .setNegativeButton(R.string.close, null)
-                .create().show());
+                new AutoDismissDialog(getString(R.string.m2_rss_used), getString(R.string.l1_license),
+                        new String[]{"", getString(R.string.close), ""},
+                        new DialogInterface.OnClickListener[]{null, null, null})
+                        .show(getSupportFragmentManager(), "AboutActivity.Rss"));
 
         // Set license text
         GeneralFunctions.setHtml(findViewById(R.id.m2_apache), GeneralFunctions.getTxt(

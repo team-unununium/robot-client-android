@@ -23,7 +23,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.unununium.vrclient.GeneralFunctions;
+import com.unununium.vrclient.functions.GeneralFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 

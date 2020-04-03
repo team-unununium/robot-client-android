@@ -31,6 +31,20 @@
     <string name="humidity">Humidity</string>
     <string name="close">Close</string>
 
+    <!-- App Update - a -->
+    <string name="a_update_app">Update App</string>
+    <string name="a_new_version">A newer version of the app is available. Would you like to update to the latest version?</string>
+    <string name="a_downloading">Downloading the latest version…</string>
+    <string name="a_app_updating">Updating app…</string>
+    <string name="a_learn_more">Learn More</string>
+    <string name="a_network_error">Network Error</string>
+    <string name="a_file_error">File Error</string>
+
+    <!-- Notifications - notif -->
+    <string name="notif_channel_update_ID">updater</string>
+    <string name="notif_channel_update">App Update</string>
+    <string name="notif_channel_update_desc">Notify users of a newer app version</string>
+
     <!-- Main Activity - m1 -->
     <string name="m1_controller">Controller</string>
     <string name="m1_observer">Observer</string>

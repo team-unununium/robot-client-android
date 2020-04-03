@@ -19,13 +19,17 @@
 package com.unununium.vrclient;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,9 +37,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.unununium.vrclient.about.AboutActivity;
+import com.unununium.vrclient.functions.GeneralFunctions;
 import com.unununium.vrclient.program.ControllerActivity;
 import com.unununium.vrclient.program.ObserverActivity;
+import com.unununium.vrclient.update.AppUpdate;
 
+import java.io.File;
 import java.util.UUID;
 
 /*
@@ -47,6 +54,8 @@ import java.util.UUID;
 * */
 public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce;
+    public static final String SHAREDPREF_APP_UPDATE_PATH = "APP_UPDATE_PATH";
+    public static final String INTENT_VALUE_DISPLAY_UPDATE="INTENT_DISPLAY_UPDATE";
 
     // TODO: Move to each activity
     // Drawable lists
@@ -72,9 +81,69 @@ public class MainActivity extends AppCompatActivity {
             editor.apply();
         }
 
-        // Check for permissions
-        if (!permissionsEnabled()) {
-            requestPermissions();
+        // First time starting the app
+        if (savedInstanceState == null) {
+            // Check for permissions
+            if (!permissionsEnabled()) {
+                requestPermissions();
+            }
+
+            // Set up notification channels
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                NotificationChannel updateChannel = new NotificationChannel(getString(
+                        R.string.notif_channel_update_ID), getString(R.string.notif_channel_update),
+                        NotificationManager.IMPORTANCE_LOW);
+                updateChannel.setDescription(getString(R.string.notif_channel_update_desc));
+                NotificationManager manager = getSystemService(NotificationManager.class);
+                if (manager != null) {
+                    manager.createNotificationChannel(updateChannel);
+                }
+            }
+
+            // Delete any past export files
+            new Handler().post(() -> {
+                String outputFileName = getFilesDir().getAbsolutePath() + "/temp";
+                File apkInstallDir = new File(outputFileName);
+                if (apkInstallDir.exists() && apkInstallDir.isDirectory()) {
+                    // Deletes all children in the folder
+                    File[] dirFiles = apkInstallDir.listFiles();
+                    if (dirFiles != null) {
+                        for (File child : dirFiles) {
+                            GeneralFunctions.deleteDir(child);
+                        }
+                    }
+                } else if (!apkInstallDir.exists()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    apkInstallDir.mkdir();
+                }
+
+                String pastUpdateFilePath = sharedPref.getString(SHAREDPREF_APP_UPDATE_PATH, "");
+                if (pastUpdateFilePath.length() != 0) {
+                    File pastUpdateFile = new File(pastUpdateFilePath);
+                    if (pastUpdateFile.exists()) {
+                        if (pastUpdateFile.delete()) {
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.putString(SHAREDPREF_APP_UPDATE_PATH,"");
+                            editor.apply();
+                        } else {
+                            Log.w(getString(R.string.app_name), "File Error: File "
+                                    + pastUpdateFilePath + " could not be deleted.");
+                        }
+                    } else {
+                        // File has already been removed
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.putString(SHAREDPREF_APP_UPDATE_PATH, "");
+                        editor.apply();
+                    }
+                }
+            });
+
+            // Always perform update check
+            if (getIntent().getBooleanExtra(INTENT_VALUE_DISPLAY_UPDATE, false)) {
+                new Handler().post(() -> new AppUpdate(MainActivity.this, true));
+            } else {
+                new Handler().post(() -> new AppUpdate(MainActivity.this, false));
+            }
         }
 
         new Thread(() -> {
