@@ -62,6 +62,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -150,6 +151,13 @@ public class AppUpdate {
      * updateViaGithub(String downloadLink) separated for clarity. **/
     private void showUpdateNotif(@NonNull JSONObject response) {
         try {
+            // Update so that it will not ask again on the same day
+            SharedPreferences.Editor editor =
+                    activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE).edit();
+            editor.putString(MainActivity.SHAREDPREF_LAST_UPDATE_CHECK, MainActivity
+                    .standardDateFormat.format(new Date()));
+            editor.apply();
+
             // Get latest version from releases page
             if (!Objects.equals(response.getString("version")
                     .replace("v", ""), BuildConfig.VERSION_NAME)) {

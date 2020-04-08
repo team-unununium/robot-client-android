@@ -26,7 +26,8 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.unununium.vrclient.BuildConfig;
-import com.unununium.vrclient.functions.GeneralFunctions;
+import com.unununium.vrclient.functions.FileFunctions;
+import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 import com.unununium.vrclient.functions.AutoDismissDialog;
@@ -61,7 +62,7 @@ public class AboutActivity extends AppCompatActivity {
                         .show(getSupportFragmentManager(), "AboutActivity.Rss"));
 
         // Set license text
-        GeneralFunctions.setHtml(findViewById(R.id.m2_apache), GeneralFunctions.getTxt(
+        UIFunctions.setHtml(findViewById(R.id.m2_apache), FileFunctions.getTxt(
                 this, "vr_client_about.txt"));
     }
 

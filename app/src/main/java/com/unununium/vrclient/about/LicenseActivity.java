@@ -29,7 +29,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.unununium.vrclient.functions.GeneralFunctions;
+import com.unununium.vrclient.functions.FileFunctions;
+import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.R;
 import com.unununium.vrclient.functions.AutoDismissDialog;
 
@@ -69,8 +70,8 @@ public class LicenseActivity extends AppCompatActivity {
                         TextView licenseView = new TextView(this);
                         licenseView.setTextSize(18);
                         licenseView.setPadding(20, 20, 20, 20);
-                        GeneralFunctions.setHtml(licenseView,
-                                infoArray[2] + GeneralFunctions.getTxt(this,
+                        UIFunctions.setHtml(licenseView,
+                                infoArray[2] + FileFunctions.getTxt(this,
                                         "apache_2_license.txt"));
                         new AutoDismissDialog(getString(R.string.license_apache_2), licenseView,
                                 buttonList, yListeners).show(getSupportFragmentManager(),
@@ -84,8 +85,8 @@ public class LicenseActivity extends AppCompatActivity {
                         TextView licenseView = new TextView(this);
                         licenseView.setTextSize(18);
                         licenseView.setPadding(20, 20, 20, 20);
-                        GeneralFunctions.setHtml(licenseView,
-                                infoArray[2] + GeneralFunctions.getTxt(this,
+                        UIFunctions.setHtml(licenseView,
+                                infoArray[2] + FileFunctions.getTxt(this,
                                         "mit_license.txt"));
                         new AutoDismissDialog(getString(R.string.license_mit), licenseView,
                                 buttonList, yListeners).show(getSupportFragmentManager(),
@@ -99,8 +100,8 @@ public class LicenseActivity extends AppCompatActivity {
                         TextView licenseView = new TextView(this);
                         licenseView.setTextSize(18);
                         licenseView.setPadding(20, 20, 20, 20);
-                        GeneralFunctions.setHtml(licenseView,
-                                infoArray[2] + GeneralFunctions.getTxt(this,
+                        UIFunctions.setHtml(licenseView,
+                                infoArray[2] + FileFunctions.getTxt(this,
                                         "cc_3_unported.txt"));
                         new AutoDismissDialog(getString(R.string.license_cc_3_unported), licenseView,
                                 buttonList, yListeners).show(getSupportFragmentManager(),
@@ -114,8 +115,8 @@ public class LicenseActivity extends AppCompatActivity {
                         TextView licenseView = new TextView(this);
                         licenseView.setTextSize(18);
                         licenseView.setPadding(20, 20, 20, 20);
-                        GeneralFunctions.setHtml(licenseView,
-                                infoArray[2] + GeneralFunctions.getTxt(this,
+                        UIFunctions.setHtml(licenseView,
+                                infoArray[2] + FileFunctions.getTxt(this,
                                         "gnu_gpl_v3_license.txt"));
                         new AutoDismissDialog(getString(R.string.license_gnu_gpl_v3), licenseView,
                                 buttonList, yListeners).show(getSupportFragmentManager(),

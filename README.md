@@ -12,7 +12,7 @@ The project consists of 4 main modules: The client, server, Raspberry Pi and Ard
  - [Arduino Module](https://github.com/team-unununium/HnR-2020-VR-Arduino)
 
 # Current module - Client
-The client module displays the video feed and updates the status of the robot to the user. It communicates to the server with a [Socket.IO](https://github.com/socketio/socket.io-client-java) connection and receives the video feed from the robot via WebRTC. Some of the code in the project is from [Google's Cardboard VR SDK Sample Implementation](https://github.com/googlevr/gvr-android-sdk) which we used as a reference. The identity of the client is confirmed by the server through two common secrets, the `SERVER_OPERATOR_SECRET` and `SERVER_CLIENT_SECRET` respectively.
+The client module displays the video feed and updates the status of the robot to the user. It communicates to the server with a [Socket.IO](https://github.com/socketio/socket.io-client-java) connection and receives the video feed from the robot via Twitch. Some of the code in the project is from [Google's Cardboard VR SDK Sample Implementation](https://github.com/googlevr/gvr-android-sdk) which we used as a reference. The identity of the client is confirmed by the server through two common secrets, the `SERVER_OPERATOR_SECRET` and `SERVER_CLIENT_SECRET` respectively.
 
 ## How to install
 APKs of the latest release would be available on the repository's [release page](https://github.com/team-unununium/HnR-2020-VR-Client/releases). If you wish to make changes to the app, you may have to compile the app yourself either through the command line or through an IDE like [Android Studio](https://developer.android.com/studio).
@@ -29,6 +29,7 @@ APKs of the latest release would be available on the repository's [release page]
    - `SERVER_OPERATOR_SECRET`: The secret used by the server to identify the client as an operator.
    - `SERVER_CLIENT_SECRET`: The secret used by the server to identify the client as an observer.
    - `SERVER_URL`: The URL that the client connects to.
+   - `CHANNEL_ID`: The twitch channel ID that the robot broadcasts to.
  - String environmental variables may need to be encased in double quotes.
 
 # If you wish to help

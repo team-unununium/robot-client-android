@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-package com.unununium.vrclient.program;
+package com.unununium.vrclient.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -24,7 +24,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.unununium.vrclient.functions.GeneralFunctions;
+import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 
@@ -35,6 +35,11 @@ public class ControllerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_controller);
+
+        findViewById(R.id.m1_back).setOnClickListener(v -> {
+            Intent intent = new Intent(ControllerActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
     }
 
     @Override
@@ -51,7 +56,7 @@ public class ControllerActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {
-            GeneralFunctions.setImmersiveSticky(this);
+            UIFunctions.setImmersiveSticky(this);
         }
     }
 

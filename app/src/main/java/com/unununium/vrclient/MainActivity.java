@@ -37,12 +37,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.unununium.vrclient.about.AboutActivity;
-import com.unununium.vrclient.functions.GeneralFunctions;
-import com.unununium.vrclient.program.ControllerActivity;
-import com.unununium.vrclient.program.ObserverActivity;
+import com.unununium.vrclient.functions.FileFunctions;
+import com.unununium.vrclient.activity.ControllerActivity;
+import com.unununium.vrclient.activity.ObserverActivity;
+import com.unununium.vrclient.functions.NetworkFunctions;
 import com.unununium.vrclient.update.AppUpdate;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.UUID;
 
 /*
@@ -54,10 +59,13 @@ import java.util.UUID;
 * */
 public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce;
-    public static final String SHAREDPREF_APP_UPDATE_PATH = "APP_UPDATE_PATH";
-    public static final String INTENT_VALUE_DISPLAY_UPDATE="INTENT_DISPLAY_UPDATE";
+    public static final String SHAREDPREF_APP_UPDATE_PATH = "appUpdatePath";
+    public static final String SHAREDPREF_LAST_UPDATE_CHECK = "lastUpdateCheck";
+    public static final String INTENT_VALUE_DISPLAY_UPDATE="intentDisplayUpdate";
+    /** The standard date storage format. **/
+    public static final SimpleDateFormat standardDateFormat =
+            new SimpleDateFormat("dd/MM/yyyy HH", Locale.ENGLISH);
 
-    // TODO: Move to each activity
     // Drawable lists
     public static int[] TEMP_LIST = new int[]{R.drawable.ic_temp_cold,
             R.drawable.ic_temp_default, R.drawable.ic_temp_hot};
@@ -73,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up GUID
         String guid;
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.app_name), MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(getPackageName(), MODE_PRIVATE);
         if (sharedPref.getString("guid", "").length() == 0) {
             guid = UUID.randomUUID().toString();
             SharedPreferences.Editor editor = sharedPref.edit();
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                     File[] dirFiles = apkInstallDir.listFiles();
                     if (dirFiles != null) {
                         for (File child : dirFiles) {
-                            GeneralFunctions.deleteDir(child);
+                            FileFunctions.deleteDir(child);
                         }
                     }
                 } else if (!apkInstallDir.exists()) {
@@ -138,17 +146,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-            // Always perform update check
+            // Checks for updates once every hour
             if (getIntent().getBooleanExtra(INTENT_VALUE_DISPLAY_UPDATE, false)) {
                 new Handler().post(() -> new AppUpdate(MainActivity.this, true));
-            } else {
+            } else if (!Objects.equals(getSharedPreferences(getPackageName(), MODE_PRIVATE)
+                            .getString(SHAREDPREF_LAST_UPDATE_CHECK, ""),
+                    standardDateFormat.format(new Date()))) {
                 new Handler().post(() -> new AppUpdate(MainActivity.this, false));
             }
         }
 
         new Thread(() -> {
-            if (!GeneralFunctions.checkServerOnline(this)) {
-                Toast.makeText(MainActivity.this, "Server offline", Toast.LENGTH_SHORT).show();
+            if (!NetworkFunctions.checkServerOnline(this)) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Server offline", Toast.LENGTH_SHORT).show());
             }
         }).start();
 

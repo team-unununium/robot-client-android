@@ -1,4 +1,4 @@
 Copyright 2020 Team Unununium.
 <br/>
 <br/>This app is a client for a robot explorer controlled by VR created at Hack & Roll 2020.
- More information about the app could be found at its <a href="https://github.com/team-unununium/hnr-vr-2020-client">GitHub</a> page.
+ More information about the app could be found at its <a href="https://github.com/team-unununium/hnr-2020-vr-client">GitHub</a> page.
