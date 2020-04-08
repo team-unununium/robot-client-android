@@ -37,9 +37,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.unununium.vrclient.about.AboutActivity;
-import com.unununium.vrclient.functions.FileFunctions;
 import com.unununium.vrclient.activity.ControllerActivity;
 import com.unununium.vrclient.activity.ObserverActivity;
+import com.unununium.vrclient.functions.FileFunctions;
 import com.unununium.vrclient.functions.NetworkFunctions;
 import com.unununium.vrclient.update.AppUpdate;
 
@@ -49,6 +49,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
+
+import okhttp3.OkHttpClient;
 
 /*
 * TODO:
@@ -65,14 +67,6 @@ public class MainActivity extends AppCompatActivity {
     /** The standard date storage format. **/
     public static final SimpleDateFormat standardDateFormat =
             new SimpleDateFormat("dd/MM/yyyy HH", Locale.ENGLISH);
-
-    // Drawable lists
-    public static int[] TEMP_LIST = new int[]{R.drawable.ic_temp_cold,
-            R.drawable.ic_temp_default, R.drawable.ic_temp_hot};
-    public static int[] GAS_LIST = new int[]{R.drawable.ic_gas_co, R.drawable.ic_gas_ch4,
-            R.drawable.ic_gas_h2, R.drawable.ic_gas_lpg};
-    public static int[] HUMIDITY_LIST = new int[]{R.drawable.ic_humidity_low,
-            R.drawable.ic_humidity_medium, R.drawable.ic_humidity_high};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,12 +158,36 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up listeners
         findViewById(R.id.m1_controller).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ControllerActivity.class);
-            startActivity(intent);
+            // Get token before entering
+            new Thread(() -> {
+                OkHttpClient client = new OkHttpClient();
+                String token = NetworkFunctions.requestToken(BuildConfig.SERVER_OPERATOR_SECRET,
+                        sharedPref, client);
+                if (token == null) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.a_network_error,
+                            Toast.LENGTH_SHORT).show());
+                } else {
+                    sharedPref.edit().putString("token", token).apply();
+                    Intent intent = new Intent(MainActivity.this, ControllerActivity.class);
+                    startActivity(intent);
+                }
+            }).start();
         });
         findViewById(R.id.m1_observer).setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, ObserverActivity.class);
-            startActivity(intent);
+            // Get token before entering
+            new Thread(() -> {
+                OkHttpClient client = new OkHttpClient();
+                String token = NetworkFunctions.requestToken(BuildConfig.SERVER_CLIENT_SECRET,
+                        sharedPref, client);
+                if (token == null) {
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.a_network_error,
+                            Toast.LENGTH_SHORT).show());
+                } else {
+                    sharedPref.edit().putString("token", token).apply();
+                    Intent intent = new Intent(MainActivity.this, ObserverActivity.class);
+                    startActivity(intent);
+                }
+            }).start();
         });
         findViewById(R.id.m1_about).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);

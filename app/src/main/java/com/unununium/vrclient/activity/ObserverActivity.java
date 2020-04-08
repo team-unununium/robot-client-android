@@ -22,20 +22,22 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.unununium.vrclient.BuildConfig;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
-import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.functions.NetworkFunctions;
+import com.unununium.vrclient.functions.UIFunctions;
 
+import io.socket.client.Socket;
 import okhttp3.OkHttpClient;
 
 public class ObserverActivity extends AppCompatActivity {
     private WebView webView;
+    private Socket socket;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -43,23 +45,17 @@ public class ObserverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_observer);
 
-        findViewById(R.id.m2_back).setOnClickListener(v -> {
-            Intent intent = new Intent(ObserverActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+        findViewById(R.id.m2_back).setOnClickListener(v -> returnToMain());
 
-        new Thread(() -> {
-            // Set up socket connection
-            OkHttpClient client = new OkHttpClient();
-            String token = NetworkFunctions.requestToken(BuildConfig.SERVER_CLIENT_SECRET,
-                    getSharedPreferences(getPackageName(), MODE_PRIVATE), client);
-            if (token == null) {
-                runOnUiThread(() -> Toast.makeText(ObserverActivity.this, R.string.a_network_error,
-                        Toast.LENGTH_SHORT).show());
-            } else {
-                // TODO: Socket
-            }
-        }).start();
+        // Icons shown here for readability
+        ImageView tempImg = findViewById(R.id.m1_temp_icon),
+                gasImg = findViewById(R.id.m1_gas_icon),
+                humidityImg = findViewById(R.id.m1_humidity_icon),
+                frontObstacleImg = findViewById(R.id.m1_front_obstacle),
+                obstacleImg = findViewById(R.id.m1_obstacle),
+                backObstacleImg = findViewById(R.id.m1_back_obstacle);
+        new Thread(() -> socket = NetworkFunctions.initSocket(ObserverActivity.this, tempImg,
+                gasImg, humidityImg, frontObstacleImg, obstacleImg, backObstacleImg)).start();
 
         webView = findViewById(R.id.m2_twitch);
         webView.setOnTouchListener((v, event) -> true);
@@ -75,8 +71,7 @@ public class ObserverActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(ObserverActivity.this, MainActivity.class);
-        startActivity(intent);
+        returnToMain();
     }
 
     @Override
@@ -91,19 +86,19 @@ public class ObserverActivity extends AppCompatActivity {
         UIFunctions.initWebView(webView);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    private void returnToMain() {
         // Delete data
         new Thread(() -> {
             OkHttpClient client = new OkHttpClient();
             boolean deletionSuccessful = NetworkFunctions
                     .deleteToken(getSharedPreferences(getPackageName(), MODE_PRIVATE), client);
             if (deletionSuccessful) {
-                // TODO: Stop socket
+                socket.close();
             } else {
                 Toast.makeText(ObserverActivity.this, R.string.a_network_error, Toast.LENGTH_SHORT).show();
             }
         }).start();
+        Intent intent = new Intent(ObserverActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 }

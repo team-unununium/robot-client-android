@@ -68,7 +68,6 @@ public class UIFunctions {
                         "console.log('I2');" +
                         "document.getElementById('#amaznidpxl').style.display='none';" +
                         "})()");
-                webView.loadUrl("javascript:(function() {console.log(document.body.outerHTML)})()");
             }
         });
         WebSettings webSettings = webView.getSettings();
