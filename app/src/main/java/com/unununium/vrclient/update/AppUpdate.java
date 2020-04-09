@@ -50,7 +50,7 @@ import com.android.volley.toolbox.Volley;
 import com.unununium.vrclient.BuildConfig;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
-import com.unununium.vrclient.functions.AutoDismissDialog;
+import com.unununium.vrclient.view.AutoDismissDialog;
 
 import org.json.JSONException;
 import org.json.JSONObject;

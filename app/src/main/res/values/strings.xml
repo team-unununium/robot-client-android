@@ -30,6 +30,7 @@
     <string name="obstacle">Obstacle</string>
     <string name="humidity">Humidity</string>
     <string name="close">Close</string>
+    <string name="convert_3d">Convert to 3D View</string>
 
     <!-- Error messages -->
     <string name="network_error">Network Error</string>

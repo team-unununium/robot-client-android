@@ -16,7 +16,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-package com.unununium.vrclient.functions;
+package com.unununium.vrclient.view;
 
 import android.app.Dialog;
 import android.content.DialogInterface;

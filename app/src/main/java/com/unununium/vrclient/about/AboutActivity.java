@@ -30,7 +30,7 @@ import com.unununium.vrclient.functions.FileFunctions;
 import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
-import com.unununium.vrclient.functions.AutoDismissDialog;
+import com.unununium.vrclient.view.AutoDismissDialog;
 
 import java.util.Calendar;
 import java.util.Locale;

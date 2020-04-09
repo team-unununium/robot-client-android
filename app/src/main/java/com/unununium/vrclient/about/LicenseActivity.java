@@ -32,7 +32,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.unununium.vrclient.functions.FileFunctions;
 import com.unununium.vrclient.functions.UIFunctions;
 import com.unununium.vrclient.R;
-import com.unununium.vrclient.functions.AutoDismissDialog;
+import com.unununium.vrclient.view.AutoDismissDialog;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -121,6 +121,19 @@ public class LicenseActivity extends AppCompatActivity {
                         new AutoDismissDialog(getString(R.string.license_gnu_gpl_v3), licenseView,
                                 buttonList, yListeners).show(getSupportFragmentManager(),
                                 "LicenseActivity.GNU_GPL_V3");
+                    });
+                } else if (Objects.equals(infoArray[0], getString(R.string.license_none))) {
+                    // No license
+                    ((TextView) licenseDisplay.findViewById(R.id.m4_type)).setText(R.string.license_none);
+                    licenseDisplay.setOnClickListener(view -> {
+                        // TextView needs to be set for each instance to prevent error
+                        TextView licenseView = new TextView(this);
+                        licenseView.setTextSize(18);
+                        licenseView.setPadding(20, 20, 20, 20);
+                        UIFunctions.setHtml(licenseView, infoArray[2]);
+                        new AutoDismissDialog(getString(R.string.license_none), licenseView,
+                                buttonList, yListeners).show(getSupportFragmentManager(),
+                                "LicenseActivity.None");
                     });
                 }
                 returnLayout.addView(licenseDisplay);

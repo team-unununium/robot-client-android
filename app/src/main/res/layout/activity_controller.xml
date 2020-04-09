@@ -152,4 +152,5 @@
             android:contentDescription="@string/back_obstacle"
             app:srcCompat="@android:color/transparent" />
     </FrameLayout>
+
 </RelativeLayout>

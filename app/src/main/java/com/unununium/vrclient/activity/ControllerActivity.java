@@ -139,6 +139,7 @@ public class ControllerActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        // WebView is needed for the 3D View as well
         UIFunctions.initWebView(webView);
         // Start sensor listener
         if (sensorListener != null && sensorManager != null && sensor != null) {

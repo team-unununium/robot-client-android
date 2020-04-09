@@ -150,38 +150,10 @@ public class MainActivity extends AppCompatActivity {
         }).start();
 
         // Set up listeners
-        findViewById(R.id.m1_controller).setOnClickListener(v -> {
-            // Get token before entering
-            new Thread(() -> {
-                OkHttpClient client = new OkHttpClient();
-                String token = NetworkFunctions.requestToken(BuildConfig.SERVER_OPERATOR_SECRET,
-                        sharedPref, client);
-                if (token == null) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.network_error,
-                            Toast.LENGTH_SHORT).show());
-                } else {
-                    sharedPref.edit().putString("token", token).apply();
-                    Intent intent = new Intent(MainActivity.this, ControllerActivity.class);
-                    startActivity(intent);
-                }
-            }).start();
-        });
-        findViewById(R.id.m1_observer).setOnClickListener(v -> {
-            // Get token before entering
-            new Thread(() -> {
-                OkHttpClient client = new OkHttpClient();
-                String token = NetworkFunctions.requestToken(BuildConfig.SERVER_CLIENT_SECRET,
-                        sharedPref, client);
-                if (token == null) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.network_error,
-                            Toast.LENGTH_SHORT).show());
-                } else {
-                    sharedPref.edit().putString("token", token).apply();
-                    Intent intent = new Intent(MainActivity.this, ObserverActivity.class);
-                    startActivity(intent);
-                }
-            }).start();
-        });
+        findViewById(R.id.m1_controller).setOnClickListener(v ->
+                startClient(BuildConfig.SERVER_OPERATOR_SECRET, ControllerActivity.class, sharedPref));
+        findViewById(R.id.m1_observer).setOnClickListener(v ->
+                startClient(BuildConfig.SERVER_CLIENT_SECRET, ObserverActivity.class, sharedPref));
         findViewById(R.id.m1_about).setOnClickListener(v -> {
             Intent intent = new Intent(MainActivity.this, AboutActivity.class);
             startActivity(intent);
@@ -204,6 +176,23 @@ public class MainActivity extends AppCompatActivity {
         moveTaskToBack(true);
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
+    }
+
+    private void startClient(String secret, Class targetActivity, SharedPreferences sharedPref) {
+        // Get token before entering
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient();
+            String token = NetworkFunctions.requestToken(secret,
+                    sharedPref, client);
+            if (token == null) {
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.network_error,
+                        Toast.LENGTH_SHORT).show());
+            } else {
+                sharedPref.edit().putString("token", token).apply();
+                Intent intent = new Intent(MainActivity.this, targetActivity);
+                startActivity(intent);
+            }
+        }).start();
     }
 
     // ****** Permission related functions ******//

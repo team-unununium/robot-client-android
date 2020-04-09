@@ -22,6 +22,7 @@
     <string name="license_mit">MIT</string>
     <string name="license_cc_3_unported">Creative Commons - Attribution 3.0 Unported (CC BY 3.0)</string>
     <string name="license_gnu_gpl_v3">GNU General Public License Version 3</string>
+    <string name="license_none">None</string>
 
     <string-array name="study_assistant_license">
         <item>@string/license_apache_2</item>
