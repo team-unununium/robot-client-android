@@ -20,6 +20,7 @@ package com.unununium.vrclient.functions;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.Network;
@@ -31,6 +32,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.unununium.vrclient.BuildConfig;
+import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 
 import org.jetbrains.annotations.NotNull;
@@ -136,7 +138,7 @@ public class NetworkFunctions {
 
     /** Returns a boolean based on whether the token is successfully deleted.
      * This function should not be called on the main thread. **/
-    public static boolean deleteToken(@NotNull SharedPreferences sharedPref, @NotNull OkHttpClient client) {
+    private static boolean deleteToken(@NotNull SharedPreferences sharedPref, @NotNull OkHttpClient client) {
         JSONObject bodyObj = new JSONObject();
         try {
             bodyObj.put("guid", sharedPref.getString("guid", ""));
@@ -187,7 +189,7 @@ public class NetworkFunctions {
                     args -> socket.emit("clientRequestData"))
                     .on("unauthorized", args ->
                             activity.runOnUiThread(() -> Toast.makeText(activity.getApplicationContext(),
-                                    "Unauthorized",
+                                    R.string.unauthorized,
                                     Toast.LENGTH_SHORT).show()))
                     .on("clientDataReceived", args -> {
                         try {
@@ -224,15 +226,35 @@ public class NetworkFunctions {
                             });
                         } catch (JSONException e) {
                             Toast.makeText(activity.getApplicationContext(),
-                                    activity.getString(R.string.a_network_error), Toast.LENGTH_SHORT).show();
+                                    activity.getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                         }
                     });
             socket.connect();
+            activity.runOnUiThread(() -> Toast.makeText(activity, R.string.connection_successful, Toast.LENGTH_SHORT).show());
             return socket;
         } catch (URISyntaxException e) {
-            Log.w(activity.getString(R.string.app_name), activity.getString(R.string.a_network_error));
+            Log.w(activity.getString(R.string.app_name), activity.getString(R.string.network_error));
             e.printStackTrace();
             return null;
         }
+    }
+
+    /** Closes the socket connection and deletes the existing token on the database
+     * before returning to
+     * @see com.unununium.vrclient.MainActivity **/
+    public static void returnToMain(@NotNull Activity activity, @Nullable Socket socket) {
+        // Delete data
+        new Thread(() -> {
+            OkHttpClient client = new OkHttpClient();
+            boolean deletionSuccessful = NetworkFunctions
+                    .deleteToken(activity.getSharedPreferences(activity.getPackageName(), Context.MODE_PRIVATE), client);
+            if (deletionSuccessful && socket != null) {
+                socket.close();
+            } else {
+                Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
+            }
+        }).start();
+        Intent intent = new Intent(activity, MainActivity.class);
+        activity.startActivity(intent);
     }
 }

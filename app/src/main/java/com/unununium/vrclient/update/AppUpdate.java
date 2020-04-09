@@ -226,7 +226,7 @@ public class AppUpdate {
         if (filesDir.exists() || filesDir.mkdir()) {
             // Ask other APK files is deleted on startup, leftover files would not be checked here
             String outputFileName = generateValidFile(activity
-                    .getFilesDir().getAbsolutePath() + "/temp/studyassistant-update");
+                    .getFilesDir().getAbsolutePath() + "/temp/unununium-update");
             RequestQueue queue = Volley.newRequestQueue(activity);
             // Boolean used as it is possible for user to cancel the dialog before the download starts
             AtomicBoolean continueDownload = new AtomicBoolean(true);
@@ -273,7 +273,7 @@ public class AppUpdate {
                             Toast.makeText(activity, R.string.a_app_updating, Toast.LENGTH_SHORT).show();
                             Intent installIntent = new Intent(Intent.ACTION_VIEW);
                             installIntent.setDataAndType(FileProvider.getUriForFile(activity,
-                                    "com.pcchin.studyassistant.provider",
+                                    activity.getPackageName() + ".ContentProvider",
                                     new File(outputFileName)),
                                     "application/vnd.android.package-archive");
                             installIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -281,30 +281,30 @@ public class AppUpdate {
                         } else {
                             Log.d("com.unununium.vrclient", "File Error: File " + outputFileName
                                     + " could not be created.");
-                            Toast.makeText(activity, R.string.a_file_error, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activity, R.string.file_error, Toast.LENGTH_SHORT).show();
                         }
                     }
                 } catch (FileNotFoundException e) {
                     Log.d("com.unununium.vrclient", "File Error: File" + outputFileName + " not found, stack trace is ");
                     e.printStackTrace();
-                    Toast.makeText(activity, R.string.a_file_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.file_error, Toast.LENGTH_SHORT).show();
                 } catch (IOException e2) {
                     Log.d("com.unununium.vrclient", "File Error: An IOException occurred at " + outputFileName
                             + ", stack trace is");
                     e2.printStackTrace();
-                    Toast.makeText(activity, R.string.a_file_error, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity, R.string.file_error, Toast.LENGTH_SHORT).show();
                 } catch (Exception e) {
                 Log.d("com.unununium.vrclient", "Error: Volley download request failed " +
                         "in middle of operation with error");
                 e.printStackTrace();
-                Toast.makeText(activity, R.string.a_network_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
                 }
             }, error -> {
                 downloadDialog.dismiss();
                 Log.d("com.unununium.vrclient", "Network Error: Volley file download request failed"
                         + ", response given is " + error.getMessage() + ", stack trace is");
                 error.printStackTrace();
-                Toast.makeText(activity, R.string.a_network_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, R.string.network_error, Toast.LENGTH_SHORT).show();
             }, null){
                 @NonNull
                 @Override

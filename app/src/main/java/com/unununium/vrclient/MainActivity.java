@@ -52,13 +52,6 @@ import java.util.UUID;
 
 import okhttp3.OkHttpClient;
 
-/*
-* TODO:
-*  1) Main Activity (Done)
-*  2) AboutActivity (Done)
-*  3) ControllerActivity
-*  4) ObserverActivity
-* */
 public class MainActivity extends AppCompatActivity {
     private boolean doubleBackToExitPressedOnce;
     public static final String SHAREDPREF_APP_UPDATE_PATH = "appUpdatePath";
@@ -152,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
 
         new Thread(() -> {
             if (!NetworkFunctions.checkServerOnline(this)) {
-                runOnUiThread(() -> Toast.makeText(MainActivity.this, "Server offline", Toast.LENGTH_SHORT).show());
+                runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.server_offline, Toast.LENGTH_SHORT).show());
             }
         }).start();
 
@@ -164,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 String token = NetworkFunctions.requestToken(BuildConfig.SERVER_OPERATOR_SECRET,
                         sharedPref, client);
                 if (token == null) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.a_network_error,
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.network_error,
                             Toast.LENGTH_SHORT).show());
                 } else {
                     sharedPref.edit().putString("token", token).apply();
@@ -180,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 String token = NetworkFunctions.requestToken(BuildConfig.SERVER_CLIENT_SECRET,
                         sharedPref, client);
                 if (token == null) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.a_network_error,
+                    runOnUiThread(() -> Toast.makeText(MainActivity.this, R.string.network_error,
                             Toast.LENGTH_SHORT).show());
                 } else {
                     sharedPref.edit().putString("token", token).apply();
@@ -202,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
             exitApp();
         } else {
             this.doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.m1_back_exit, Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 1500);
         }
     }

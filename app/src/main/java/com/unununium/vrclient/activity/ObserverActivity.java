@@ -19,21 +19,17 @@
 package com.unununium.vrclient.activity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.unununium.vrclient.MainActivity;
 import com.unununium.vrclient.R;
 import com.unununium.vrclient.functions.NetworkFunctions;
 import com.unununium.vrclient.functions.UIFunctions;
 
 import io.socket.client.Socket;
-import okhttp3.OkHttpClient;
 
 public class ObserverActivity extends AppCompatActivity {
     private WebView webView;
@@ -45,17 +41,18 @@ public class ObserverActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_observer);
 
-        findViewById(R.id.m2_back).setOnClickListener(v -> returnToMain());
+        findViewById(R.id.m2_back).setOnClickListener(v -> NetworkFunctions
+                .returnToMain(ObserverActivity.this, socket));
 
         // Icons shown here for readability
-        ImageView tempImg = findViewById(R.id.m1_temp_icon),
-                gasImg = findViewById(R.id.m1_gas_icon),
-                humidityImg = findViewById(R.id.m1_humidity_icon),
-                frontObstacleImg = findViewById(R.id.m1_front_obstacle),
-                obstacleImg = findViewById(R.id.m1_obstacle),
-                backObstacleImg = findViewById(R.id.m1_back_obstacle);
+        ImageView tempImg = findViewById(R.id.m2_temp_icon),
+                gasImg = findViewById(R.id.m2_gas_icon),
+                humidityImg = findViewById(R.id.m2_humidity_icon),
+                frontObstacleImg = findViewById(R.id.m2_front_obstacle),
+                obstacleImg = findViewById(R.id.m2_obstacle),
+                backObstacleImg = findViewById(R.id.m2_back_obstacle);
         new Thread(() -> socket = NetworkFunctions.initSocket(ObserverActivity.this, tempImg,
-                gasImg, humidityImg, frontObstacleImg, obstacleImg, backObstacleImg)).start();
+            gasImg, humidityImg, frontObstacleImg, obstacleImg, backObstacleImg)).start();
 
         webView = findViewById(R.id.m2_twitch);
         webView.setOnTouchListener((v, event) -> true);
@@ -71,7 +68,7 @@ public class ObserverActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        returnToMain();
+        NetworkFunctions.returnToMain(ObserverActivity.this, socket);
     }
 
     @Override
@@ -84,21 +81,5 @@ public class ObserverActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         UIFunctions.initWebView(webView);
-    }
-
-    private void returnToMain() {
-        // Delete data
-        new Thread(() -> {
-            OkHttpClient client = new OkHttpClient();
-            boolean deletionSuccessful = NetworkFunctions
-                    .deleteToken(getSharedPreferences(getPackageName(), MODE_PRIVATE), client);
-            if (deletionSuccessful) {
-                socket.close();
-            } else {
-                Toast.makeText(ObserverActivity.this, R.string.a_network_error, Toast.LENGTH_SHORT).show();
-            }
-        }).start();
-        Intent intent = new Intent(ObserverActivity.this, MainActivity.class);
-        startActivity(intent);
     }
 }
