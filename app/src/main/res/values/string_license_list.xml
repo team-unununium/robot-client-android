@@ -18,27 +18,33 @@
   -->
 
 <resources>
-    <string name="license_apache_2">Apache 2.0</string>
-    <string name="license_mit">MIT</string>
+    <string name="license_apache_2">Apache License 2.0</string>
+    <string name="license_mit">MIT License</string>
     <string name="license_cc_3_unported">Creative Commons - Attribution 3.0 Unported (CC BY 3.0)</string>
     <string name="license_gnu_gpl_v3">GNU General Public License Version 3</string>
     <string name="license_none">None</string>
 
     <string-array name="study_assistant_license">
-        <item>@string/license_apache_2</item>
         <item>Study Assistant</item>
+        <item>@string/license_apache_2</item>
+        <item>Copyright © 2020 &lt;a href=&quot;https://github.com/pc-chin&quot;&gt;PC Chin&lt;/a&gt;</item>
+    </string-array>
+
+    <string-array name="licenseview_license">
+        <item>LicenseView</item>
+        <item>@string/license_apache_2</item>
         <item>Copyright © 2020 &lt;a href=&quot;https://github.com/pc-chin&quot;&gt;PC Chin&lt;/a&gt;</item>
     </string-array>
 
     <string-array name="okhttp_license">
-        <item>@string/license_apache_2</item>
         <item>OkHttp</item>
+        <item>@string/license_apache_2</item>
         <item>Copyright 2019 &lt;a href=&quot;https://square.github.io/&quot;&gt;Square, Inc.&lt;/a&gt;</item>
     </string-array>
 
     <string-array name="socketio_client_java_license">
-        <item>@string/license_mit</item>
         <item>Socket.IO-client Java</item>
+        <item>@string/license_mit</item>
         <item>Copyright © 2013 &lt;a href=&quot;https://github.com/nkzawa&quot;&gt;Naoyuki Kanezawa&lt;/a&gt;</item>
     </string-array>
 

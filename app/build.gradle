@@ -109,4 +109,6 @@ dependencies {
     }
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.5.0'
+    //noinspection GradleDependency
+    implementation 'com.github.pcchin:licenseview:1.0.1'
 }
