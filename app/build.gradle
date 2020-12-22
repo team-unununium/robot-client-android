@@ -64,6 +64,7 @@ android {
         buildConfigField "String", "SERVER_CLIENT_SECRET", "${secureProperties["SERVER_CLIENT_SECRET"]}"
         buildConfigField "String", "SERVER_URL", "${secureProperties["SERVER_URL"]}"
         buildConfigField "String", "CHANNEL_ID", "${secureProperties["CHANNEL_ID"]}"
+        resValue "string", "app_name", "Unununium Client"
     }
 
     buildTypes {
@@ -80,6 +81,7 @@ android {
             sourceSets {
                 androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
             }
+            resValue "string", "app_name", "UC Debug"
         }
     }
     compileOptions {
@@ -98,6 +100,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.preference:preference:1.1.1'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.AppIntro:AppIntro:6.0.0'

@@ -16,31 +16,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-buildscript {
-    repositories {
-        google()
-        jcenter()
-    }
-    dependencies {
-        classpath "com.android.tools.build:gradle:4.1.1"
+package io.github.unununium.util;
 
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
-    }
-}
+import android.app.Activity;
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        maven { url "https://jitpack.io" }
-    }
-    tasks.withType(JavaCompile) {
-        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    }
-}
+import org.jetbrains.annotations.NotNull;
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+/** Static functions that are used throughout the app. **/
+public class GeneralFunctions {
+    private GeneralFunctions() {
+        throw new IllegalStateException("Utility class");
+    }
+
+    /** Exits the app.**/
+    public static void exitApp(@NotNull Activity activity) {
+        activity.moveTaskToBack(true);
+        android.os.Process.killProcess(android.os.Process.myPid());
+        System.exit(0);
+    }
 }

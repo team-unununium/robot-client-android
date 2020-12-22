@@ -20,15 +20,48 @@ package io.github.unununium.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.view.View;
+import android.widget.Toast;
+
+import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
+import io.github.unununium.util.GeneralFunctions;
 
 public class MainActivity extends AppCompatActivity {
+    private boolean doubleBackToExitPressedOnce = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setImmersiveSticky();
+    }
+
+    /** Set the top bar of the screen to be hidden. **/
+    private void setImmersiveSticky() {
+        getWindow().getDecorView()
+                .setSystemUiVisibility(
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Press back to exit
+        if (doubleBackToExitPressedOnce) {
+            GeneralFunctions.exitApp(MainActivity.this);
+        } else {
+            this.doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, R.string.activity_back_exit, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 1500);
+        }
     }
 }

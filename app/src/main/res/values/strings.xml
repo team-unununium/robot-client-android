@@ -17,7 +17,19 @@
   -->
 
 <resources>
-    <string name="app_name">Unununium Client</string>
+    <string name="activity_back_exit">Press back again to exit</string>
+    <string name="error_bluetooth_permission_denied">The app would not be able to connect to the controller without Bluetooth.</string>
+    <string name="error_location_permission_denied">The location permission for the app has been denied. The app would not be able to connect to the controller without Bluetooth, which indirectly requires the location permission.</string>
+    <string name="error_storage_permission_denied">The storage permission for the app has been denied. The app would not be able to store the screenshots in a public directory.</string>
+    <string name="intro_slide_1_title">Welcome!</string>
+    <string name="intro_slide_1_desc">This app is a client for Team Unununium\'s VR Robot.</string>
+    <string name="intro_slide_2_title">Bluetooth Permission</string>
+    <string name="intro_slide_2_desc">Please allow the app to access Bluetooth to allow it to connect to the watch.</string>
+    <string name="intro_slide_3_title">Location Permission</string>
+    <string name="intro_slide_3_desc">Although this app does not track your location, it is required to allow it to scan for nearby bluetooth devices.</string>
+    <string name="intro_slide_4_title">Storage Permission</string>
+    <string name="intro_slide_4_desc">Please allow the app to access your local storage to allow in-app screenshots to be stored on your device.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
