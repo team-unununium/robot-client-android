@@ -29,7 +29,4 @@
     <string name="intro_slide_3_desc">Although this app does not track your location, it is required to allow it to scan for nearby bluetooth devices.</string>
     <string name="intro_slide_4_title">Storage Permission</string>
     <string name="intro_slide_4_desc">Please allow the app to access your local storage to allow in-app screenshots to be stored on your device.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

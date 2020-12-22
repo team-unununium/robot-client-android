@@ -30,10 +30,10 @@ import io.github.unununium.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link LiveVideoFragment#newInstance} factory method to
+ * Use the {@link DiagnosticsOverlayFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LiveVideoFragment extends Fragment {
+public class DiagnosticsOverlayFragment extends OverlayFragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,7 +44,7 @@ public class LiveVideoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public LiveVideoFragment() {
+    public DiagnosticsOverlayFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +54,11 @@ public class LiveVideoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment LiveVideoFragment.
+     * @return A new instance of fragment DiagnosticsOverlayFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static LiveVideoFragment newInstance(String param1, String param2) {
-        LiveVideoFragment fragment = new LiveVideoFragment();
+    public static DiagnosticsOverlayFragment newInstance(String param1, String param2) {
+        DiagnosticsOverlayFragment fragment = new DiagnosticsOverlayFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,6 +79,6 @@ public class LiveVideoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_live_video, container, false);
+        return inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
     }
 }
