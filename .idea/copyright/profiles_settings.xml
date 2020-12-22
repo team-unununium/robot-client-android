@@ -1,3 +1,7 @@
 <component name="CopyrightManager">
-  <settings default="Unununium GPL v3" />
+  <settings default="Unununium GPL V3">
+    <module2copyright>
+      <element module="Project Files" copyright="Unununium GPL V3" />
+    </module2copyright>
+  </settings>
 </component>

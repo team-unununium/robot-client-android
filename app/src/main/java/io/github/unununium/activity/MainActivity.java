@@ -16,5 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-include ':app'
-rootProject.name = "Unununium Client"
+package io.github.unununium.activity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+
+import io.github.unununium.R;
+
+public class MainActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+    }
+}
