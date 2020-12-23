@@ -19,12 +19,53 @@
 package io.github.unununium.fragment;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class AboutOverlayFragment extends OverlayFragment {
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+
+import io.github.unununium.R;
+
+public class AboutOverlayFragment extends Fragment {
+    public AboutOverlayFragment() {
+        // Required empty public constructor
+    }
+
+    /** @return the HTML file of the About stage as a String. **/
+    @NonNull
+    private String getAboutFile() {
+        String text;
+        StringBuilder stringBuilder = new StringBuilder();
+        InputStream inputStream;
+        try {
+            inputStream = requireContext().getAssets().open("about.html");
+            BufferedReader bufferedReader =
+                    new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            while ((text = bufferedReader.readLine()) != null) {
+                stringBuilder.append(text);
+            }
+            bufferedReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringBuilder.toString();
+    }
+
     /** Inserts a HTML text into a TextView. **/
     private void setHtml(TextView view, String htmlText) {
         Spanned output;
@@ -35,5 +76,17 @@ public class AboutOverlayFragment extends OverlayFragment {
         }
         view.setText(output);
         view.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_about_overlay, container, false);
     }
 }

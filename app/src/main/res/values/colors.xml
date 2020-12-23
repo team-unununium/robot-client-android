@@ -26,7 +26,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="colorPrimaryLight">@color/purple_200</color>
     <color name="colorPrimary">@color/purple_500</color>
     <color name="colorPrimaryDark">@color/purple_700</color>
     <color name="colorAccent">@color/teal_200</color>
+    <color name="white_transparent">#4cFFFFFF</color>
 </resources>

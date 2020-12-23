@@ -18,6 +18,29 @@
 
 package io.github.unununium.fragment;
 
-public class DiagnosticsOverlayFragment extends OverlayFragment {
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
+import org.jetbrains.annotations.NotNull;
+
+import io.github.unununium.R;
+
+public class DiagnosticsOverlayFragment extends OverlayFragment {
+    public DiagnosticsOverlayFragment() {
+        // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
+    }
 }

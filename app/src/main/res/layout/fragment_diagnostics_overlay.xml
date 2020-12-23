@@ -17,9 +17,254 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/> .
   -->
 
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/do_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.DiagnosticsOverlayFragment" />
+    tools:context=".fragment.DiagnosticsOverlayFragment">
+    <ImageButton
+        android:id="@+id/overlay_diag_screenshot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/screenshot"
+        android:src="@drawable/ic_camera_50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/overlay_diag_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/settings"
+        android:src="@drawable/ic_settings_50"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/overlay_diag_start_moving"
+        android:layout_width="100sp"
+        android:layout_height="100sp"
+        android:layout_marginTop="24dp"
+        android:background="@android:color/transparent"
+        android:text="@string/blank"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_screenshot" />
+
+    <TextView
+        android:id="@+id/overlay_diag_temp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/default_temp"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_settings" />
+
+    <TextView
+        android:id="@+id/overlay_diag_humidity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_humidity"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_temp" />
+
+    <TextView
+        android:id="@+id/overlay_diag_front_obstacle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_front_obstacle"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_humidity" />
+
+    <TextView
+        android:id="@+id/overlay_diag_back_obstacle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_back_obstacle"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_front_obstacle" />
+
+    <TextView
+        android:id="@+id/overlay_diag_co_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_back_obstacle" />
+
+    <TextView
+        android:id="@+id/overlay_diag_ch4_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_co_level" />
+
+    <TextView
+        android:id="@+id/overlay_diag_h2_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_ch4_level" />
+
+    <TextView
+        android:id="@+id/overlay_diag_lpg_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_h2_level" />
+
+    <TextView
+        android:id="@+id/overlay_diag_server"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/default_server_status"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/overlay_diag_app_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_mode_status"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_server"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_server" />
+
+    <TextView
+        android:id="@+id/overlay_diag_night_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_camera_night_mode"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_app_mode"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_app_mode" />
+
+    <TextView
+        android:id="@+id/overlay_diag_external_controller"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_external_controller"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_night_mode"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_night_mode" />
+
+    <TextView
+        android:id="@+id/overlay_diag_phone_mode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_phone_mode"
+        android:textColor="@color/white"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_external_controller"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_external_controller" />
+
+    <TextView
+        android:id="@+id/overlay_diag_last_camera_rotation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/last_camera_rotation"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_phone_mode"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_phone_mode" />
+
+    <TextView
+        android:id="@+id/overlay_diag_camera_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_last_camera_rotation"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_last_camera_rotation" />
+
+    <TextView
+        android:id="@+id/overlay_diag_camera_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_camera_x"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_camera_x" />
+
+    <TextView
+        android:id="@+id/overlay_diag_camera_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_camera_y"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_camera_y" />
+
+    <TextView
+        android:id="@+id/overlay_diag_last_robot_rotation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/last_robot_rotation"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_camera_z"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_camera_z" />
+
+    <TextView
+        android:id="@+id/overlay_diag_robot_x"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_last_robot_rotation"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_last_robot_rotation" />
+
+    <TextView
+        android:id="@+id/overlay_diag_robot_y"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_x"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_x" />
+
+    <TextView
+        android:id="@+id/overlay_diag_robot_z"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/default_num"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_y"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_y" />
+</androidx.constraintlayout.widget.ConstraintLayout>
