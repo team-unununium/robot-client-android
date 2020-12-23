@@ -29,7 +29,6 @@ APKs of the latest release would be available on the repository's [release page]
    - `SERVER_OPERATOR_SECRET`: The secret used by the server to identify the client as an operator.
    - `SERVER_CLIENT_SECRET`: The secret used by the server to identify the client as an observer.
    - `SERVER_URL`: The URL that the client connects to.
-   - `CHANNEL_ID`: The twitch channel ID that the robot broadcasts to.
  - String environmental variables may need to be encased in double quotes.
 
 # If you wish to help

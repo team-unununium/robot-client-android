@@ -40,7 +40,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.UnununiumClient">
+        android:theme="@style/Theme.UnununiumClient"
+        android:hardwareAccelerated="true" >
         <activity android:name=".activity.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

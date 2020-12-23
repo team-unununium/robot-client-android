@@ -23,4 +23,6 @@ public class Constants {
     private Constants() {
         throw new IllegalStateException("Utility class");
     }
+
+    public static final double TWITCH_STREAM_WIDTH = 1920d;
 }
