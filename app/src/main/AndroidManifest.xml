@@ -49,7 +49,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity"
-            android:screenOrientation="userLandscape"/>
+            android:screenOrientation="userLandscape"
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>
