@@ -19,23 +19,23 @@
 package io.github.unununium.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.preference.PreferenceFragment;
-import androidx.preference.PreferenceFragmentCompat;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.preference.PreferenceFragmentCompat;
+
 import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
+import io.github.unununium.activity.MainActivity;
 
 public class SettingsOverlayFragment extends PreferenceFragmentCompat {
+    private MainActivity parentActivity;
 
-    public SettingsOverlayFragment() {
-        // Required empty public constructor
+    public SettingsOverlayFragment(MainActivity parentActivity) {
+        super();
+        this.parentActivity = parentActivity;
     }
 
     @Override

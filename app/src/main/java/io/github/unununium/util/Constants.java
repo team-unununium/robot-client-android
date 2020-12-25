@@ -24,6 +24,39 @@ public class Constants {
         throw new IllegalStateException("Utility class");
     }
 
+    /** The type of overlay that is displayed on the screen. **/
+    public enum OverlayType {
+        TYPE_ABOUT,
+        TYPE_DIAGNOSTICS,
+        TYPE_NORMAL_TEXT,
+        TYPE_NORMAL_ICON,
+        TYPE_SETTINGS,
+        TYPE_NONE // Applies when no UI icons are displayed
+    }
+
+    /** The function that the movement / rotation of the phone corresponds to. **/
+    public enum PhoneFunction {
+        PHONE_DISABLED,
+        PHONE_CAMERA_ROTATION,
+        PHONE_ROBOT_ROTATION
+    }
+
+    /** The status of the external controller. **/
+    public enum ExternalControllerStatus {
+        CONTROLLER_DISABLED,
+        CONTROLLER_NO_BLUETOOTH,
+        CONTROLLER_DISCONNECTED,
+        CONTROLLER_CONNECTED
+    }
+
+    /** The status of the connection between the phone and the server. **/
+    public enum ServerStatus {
+        SERVER_NO_INTERNET,
+        SERVER_DISCONNECTED,
+        SERVER_AUTHENTICATING,
+        SERVER_CONNECTED
+    }
+
     public static final String SERVER_PREFIX = "Server: ";
     public static final String MODE_PREFIX = "Mode: ";
     public static final String CAMERA_NIGHT_MODE_PREFIX = "Camera night mode: ";

@@ -19,9 +19,6 @@
 package io.github.unununium.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,11 +26,14 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
+import io.github.unununium.activity.MainActivity;
 
 public class NormalOverlayFragment extends OverlayFragment {
+    private final boolean isText;
 
-    public NormalOverlayFragment() {
-        // Required empty public constructor
+    public NormalOverlayFragment(MainActivity parentActivity, boolean isText) {
+        super(parentActivity);
+        this.isText = isText;
     }
 
     @Override
@@ -45,6 +45,7 @@ public class NormalOverlayFragment extends OverlayFragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_normal_text_overlay, container, false);
+        int res = isText ? R.layout.fragment_normal_text_overlay : R.layout.fragment_normal_icon_overlay;
+        return inflater.inflate(res, container, false);
     }
 }

@@ -16,17 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/> .
  */
 
-package io.github.unununium.fragment;
+package io.github.unununium.util;
 
-import androidx.fragment.app.Fragment;
-
-import io.github.unununium.activity.MainActivity;
-
-/** An overlay Fragment that receives variables from the activity. **/
-public abstract class OverlayFragment extends Fragment {
-    protected MainActivity parentActivity;
-
-    public OverlayFragment(MainActivity parentActivity) {
-        this.parentActivity = parentActivity;
-    }
+public interface FragmentOnBackPressed {
+    /** The back press that is handled by the Fragment.
+     * Returns true for the activity's onBackPressed to be called, and false otherwise. **/
+    boolean onBackPressed();
 }

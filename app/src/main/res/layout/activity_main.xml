@@ -23,10 +23,18 @@
     android:id="@+id/m1_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.MainActivity" >
+    tools:context=".activity.MainActivity">
+
+    <FrameLayout
+        android:id="@+id/m1_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <WebView
         android:id="@+id/m1_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+    </WebView>
+
 </FrameLayout>

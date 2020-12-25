@@ -82,13 +82,13 @@
     <string name="pref_diagnostics">Diagnostics mode</string>
 
     <string-array name="pref_three">
-        <string>0</string>
-        <string>1</string>
-        <string>2</string>
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
     <string-array name="pref_phone_control">
-        <string>Disabled</string>
-        <string>Camera Rotation</string>
-        <string>Robot Rotation</string>
+        <item>Disabled</item>
+        <item>Camera Rotation</item>
+        <item>Robot Rotation</item>
     </string-array>
 </resources>

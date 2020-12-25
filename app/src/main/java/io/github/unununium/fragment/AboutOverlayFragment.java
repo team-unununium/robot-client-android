@@ -40,10 +40,11 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 import io.github.unununium.R;
+import io.github.unununium.activity.MainActivity;
 
-public class AboutOverlayFragment extends Fragment {
-    public AboutOverlayFragment() {
-        // Required empty public constructor
+public class AboutOverlayFragment extends OverlayFragment {
+    public AboutOverlayFragment(MainActivity parentActivity) {
+        super(parentActivity);
     }
 
     /** @return the HTML file of the About stage as a String. **/

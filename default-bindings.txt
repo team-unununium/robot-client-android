@@ -1,10 +1,12 @@
-A: Start / stop moving
+X: Start / stop moving
+A: Toggle UI visibility
 B: Toggle camera night mode
-X: Invert UI colour
-Y: Toggle UI visibility
-L1 Button: Camera Z rotation (downwards)
-R1 Button: Camera Z rotation (upwards)
+Y: Invert UI colour
+LB: Take screenshot
+RB: Toggle diagnostics mode
+Select / Menu: Settings
+
+LT: Camera Z rotation (downwards)
+RT: Camera Z rotation (upwards)
 Left Analog: Robot X and Y rotation
 Right Analog: Camera X and Y rotation
-Left Analog Button: Take screenshot
-Right Analog Button: Toggle diagnostics mode

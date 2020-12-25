@@ -26,10 +26,11 @@ import android.view.ViewGroup;
 import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
+import io.github.unununium.activity.MainActivity;
 
 public class DiagnosticsOverlayFragment extends OverlayFragment {
-    public DiagnosticsOverlayFragment() {
-        // Required empty public constructor
+    public DiagnosticsOverlayFragment(MainActivity parentActivity) {
+        super(parentActivity);
     }
 
     @Override

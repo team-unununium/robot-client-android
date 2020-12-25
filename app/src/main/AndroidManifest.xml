@@ -41,7 +41,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.UnununiumClient"
-        android:hardwareAccelerated="true" >
+        android:hardwareAccelerated="true"
+        android:requestLegacyExternalStorage="true" >
         <activity android:name=".activity.WelcomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
