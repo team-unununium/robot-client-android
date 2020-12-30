@@ -76,14 +76,13 @@ public class GeneralFunctions {
      * The path will always end in '/'. **/
     @NonNull
     private static String getInternalScreenshotsDir(@NonNull Context context) {
-        File downloadDirFile = null;
         File[] internalDirList = new File[]{context.getExternalFilesDir(Environment.DIRECTORY_DCIM),
                 context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS),
                 context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) };
         for (File file: internalDirList) {
             if (file != null) return file.getAbsolutePath();
         }
-        return downloadDirFile == null ? "/storage/emulated/0/" : downloadDirFile.getAbsolutePath() + "/";
+        return "/storage/emulated/0/";
     }
 
     /** Generates a valid file in the required directory.
@@ -100,8 +99,8 @@ public class GeneralFunctions {
         return returnFile;
     }
 
-    /** Checks if the device has the required controller features (game pad, joystick, BUTTON_L1,
-     * BUTTON_R1, AXIS_LTRIGGER, AXIS_RTRIGGER) **/
+    /** Checks if the device has the required controller features (game pad, joystick, D-Pad,
+     * BUTTON_L1, BUTTON_R1, AXIS_LTRIGGER, AXIS_RTRIGGER) **/
     public static boolean deviceIsController(@NotNull InputDevice device) {
         int sources = device.getSources();
         return (sources & InputDevice.SOURCE_GAMEPAD) == InputDevice.SOURCE_GAMEPAD &&

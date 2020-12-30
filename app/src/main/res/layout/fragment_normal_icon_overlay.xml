@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/moving"
-        android:src="@drawable/ic_car_50"
+        android:src="@drawable/ic_car_50_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/disconnected"
-        android:src="@drawable/ic_cloud_off_50"
+        android:src="@drawable/ic_cloud_off_50_day"
         app:layout_constraintStart_toEndOf="@+id/overlay_icon_moving"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/screenshot"
-        android:src="@drawable/ic_camera_50"
+        android:src="@drawable/ic_camera_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/settings"
-        android:src="@drawable/ic_settings_50"
+        android:src="@drawable/ic_settings_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="64dp"
         android:contentDescription="@string/temperature"
-        android:src="@drawable/ic_temp_default"
+        android:src="@drawable/ic_temp_default_day"
         app:layout_constraintEnd_toStartOf="@+id/overlay_icon_start_moving"
         app:layout_constraintTop_toTopOf="@+id/overlay_icon_start_moving" />
 
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:contentDescription="@string/humidity"
-        android:src="@drawable/ic_humidity_medium"
+        android:src="@drawable/ic_humidity_medium_day"
         app:layout_constraintStart_toEndOf="@+id/overlay_icon_start_moving"
         app:layout_constraintTop_toTopOf="@+id/overlay_icon_start_moving" />
 
@@ -112,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/obstacle"
-        android:src="@drawable/ic_obstacle"
+        android:src="@drawable/ic_obstacle_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overlay_icon_start_moving" />
@@ -122,7 +122,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/obstacle"
-        android:src="@drawable/ic_obstacle_front"
+        android:src="@drawable/ic_obstacle_front_day"
         app:layout_constraintEnd_toStartOf="@+id/overlay_obstacle_icon"
         app:layout_constraintTop_toTopOf="@+id/overlay_obstacle_icon" />
 
@@ -131,7 +131,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/obstacle"
-        android:src="@drawable/ic_obstacle_back"
+        android:src="@drawable/ic_obstacle_back_day"
         app:layout_constraintStart_toEndOf="@+id/overlay_obstacle_icon"
         app:layout_constraintTop_toTopOf="@+id/overlay_obstacle_icon" />
 
@@ -142,7 +142,7 @@
         android:layout_marginEnd="64dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/blank"
-        android:src="@drawable/ic_gas_co"
+        android:src="@drawable/ic_gas_co_day"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/overlay_ch4_icon" />
 
@@ -153,7 +153,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/blank"
-        android:src="@drawable/ic_gas_ch4"
+        android:src="@drawable/ic_gas_ch4_day"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/overlay_bottom_midpoint" />
 
@@ -164,7 +164,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/blank"
-        android:src="@drawable/ic_gas_h2"
+        android:src="@drawable/ic_gas_h2_day"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/overlay_bottom_midpoint" />
 
@@ -175,7 +175,7 @@
         android:layout_marginStart="64dp"
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/blank"
-        android:src="@drawable/ic_gas_lpg"
+        android:src="@drawable/ic_gas_lpg_day"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/overlay_h2_icon" />
 </androidx.constraintlayout.widget.ConstraintLayout>

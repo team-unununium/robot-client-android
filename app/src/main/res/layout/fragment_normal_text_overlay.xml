@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/moving"
-        android:src="@drawable/ic_car_50"
+        android:src="@drawable/ic_car_50_day"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/disconnected"
-        android:src="@drawable/ic_cloud_off_50"
+        android:src="@drawable/ic_cloud_off_50_day"
         app:layout_constraintStart_toEndOf="@+id/overlay_text_moving"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +49,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/screenshot"
-        android:src="@drawable/ic_camera_50"
+        android:src="@drawable/ic_camera_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/settings"
-        android:src="@drawable/ic_settings_50"
+        android:src="@drawable/ic_settings_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

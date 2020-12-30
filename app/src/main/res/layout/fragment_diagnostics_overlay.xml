@@ -29,7 +29,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/screenshot"
-        android:src="@drawable/ic_camera_50"
+        android:src="@drawable/ic_camera_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,7 +39,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/settings"
-        android:src="@drawable/ic_settings_50"
+        android:src="@drawable/ic_settings_50_day"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -58,11 +58,11 @@
         android:id="@+id/overlay_diag_temp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/default_temp"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_settings" />
 
@@ -72,7 +72,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_humidity"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_temp" />
 
@@ -82,7 +82,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_front_obstacle"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_humidity" />
 
@@ -92,7 +92,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_back_obstacle"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_front_obstacle" />
 
@@ -102,7 +102,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_num"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_back_obstacle" />
 
@@ -112,7 +112,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_num"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_co_level" />
 
@@ -122,7 +122,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_num"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_ch4_level" />
 
@@ -132,7 +132,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_num"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="@+id/overlay_diag_temp"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_h2_level" />
 
@@ -144,7 +144,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/default_server_status"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -154,7 +154,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_mode_status"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_server"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_server" />
 
@@ -164,7 +164,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_camera_night_mode"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_app_mode"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_app_mode" />
 
@@ -174,7 +174,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_external_controller"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_night_mode"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_night_mode" />
 
@@ -184,7 +184,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_phone_mode"
         android:textColor="@color/white"
-        android:textSize="24sp"
+        android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_external_controller"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_external_controller" />
 

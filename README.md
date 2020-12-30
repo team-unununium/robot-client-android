@@ -29,6 +29,7 @@ APKs of the latest release would be available on the repository's [release page]
    - `SERVER_OPERATOR_SECRET`: The secret used by the server to identify the client as an operator.
    - `SERVER_CLIENT_SECRET`: The secret used by the server to identify the client as an observer.
    - `SERVER_URL`: The URL that the client connects to.
+   - `RTMP_URL`: The URL that is used to receive the video footage sent by the robot.
  - String environmental variables may need to be encased in double quotes.
 
 # If you wish to help

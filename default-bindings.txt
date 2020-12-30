@@ -4,7 +4,8 @@ B: Toggle camera night mode
 Y: Invert UI colour
 LB: Take screenshot
 RB: Toggle diagnostics mode
-Select / Menu: Settings
+Select / Menu: Toggle settings / about page
+DPad Up and Down: Change speed
 
 LT: Camera Z rotation (downwards)
 RT: Camera Z rotation (upwards)

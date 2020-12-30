@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +30,8 @@ import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
 
 public class DiagnosticsOverlayFragment extends OverlayFragment {
-    public DiagnosticsOverlayFragment(MainActivity parentActivity) {
-        super(parentActivity);
+    public DiagnosticsOverlayFragment(MainActivity parentActivity, boolean initIsDay) {
+        super(parentActivity, initIsDay);
     }
 
     @Override
@@ -38,10 +39,39 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
         super.onCreate(savedInstanceState);
     }
 
+    /** Sets the text and image resources. **/
+    @Override
+    protected void setIntLists() {
+        super.textViewList = new int[]{ R.id.overlay_diag_temp, R.id.overlay_diag_humidity, 
+                R.id.overlay_diag_front_obstacle, R.id.overlay_diag_back_obstacle, 
+                R.id.overlay_diag_co_level, R.id.overlay_diag_ch4_level, 
+                R.id.overlay_diag_h2_level, R.id.overlay_diag_lpg_level, 
+                R.id.overlay_diag_server, R.id.overlay_diag_app_mode, R.id.overlay_diag_night_mode, 
+                R.id.overlay_diag_external_controller, R.id.overlay_diag_phone_mode,
+                R.id.overlay_diag_last_camera_rotation, R.id.overlay_diag_camera_x, 
+                R.id.overlay_diag_camera_y, R.id.overlay_diag_camera_z,
+                R.id.overlay_diag_last_robot_rotation, R.id.overlay_diag_robot_x,
+                R.id.overlay_diag_robot_y, R.id.overlay_diag_robot_z };
+        super.imageViewList = new int[]{ R.id.overlay_diag_screenshot, R.id.overlay_diag_settings };
+        super.dayImageResList = new int[]{ R.drawable.ic_camera_50_day, R.drawable.ic_settings_50_day };
+        super.nightImageResList = new int[]{ R.drawable.ic_camera_50_night, R.drawable.ic_settings_50_night };
+    }
+
+    /** Set the onClickListeners for the view. **/
+    @Override
+    protected void setViewListeners(@NotNull View view) {
+        ((ImageButton) view.findViewById(R.id.overlay_diag_screenshot))
+                .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onScreenshot());
+        ((ImageButton) view.findViewById(R.id.overlay_diag_settings))
+                .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onToggleUpperOverlay());
+    }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
+        View returnView = inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
+        setViewListeners(returnView);
+        return returnView;
     }
 }

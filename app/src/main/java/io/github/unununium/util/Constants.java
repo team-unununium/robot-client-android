@@ -26,12 +26,12 @@ public class Constants {
 
     /** The type of overlay that is displayed on the screen. **/
     public enum OverlayType {
-        TYPE_ABOUT,
         TYPE_DIAGNOSTICS,
         TYPE_NORMAL_TEXT,
         TYPE_NORMAL_ICON,
+        TYPE_ABOUT,
         TYPE_SETTINGS,
-        TYPE_NONE // Applies when no UI icons are displayed
+        TYPE_NONE
     }
 
     /** The function that the movement / rotation of the phone corresponds to. **/
@@ -74,4 +74,10 @@ public class Constants {
     public static final String HUMIDITY_SUFFIX = " %";
     public static final String TEMP_SUFFIX = " °C";
     public static final String WARNING_SUFFIX = " ⚠";
+
+    // Tested buffer settings optimized for low latency streaming
+    public static final int MIN_BUFFER = 1000;
+    public static final int MAX_BUFFER = 2800; // Can't go below this, otherwise the image would not be displayed
+    public static final int BUFFER_FOR_PLAYBACK = 500;
+    public static final int BUFFER_FOR_PLAYBACK_AFTER_REBUFFER = 500;
 }

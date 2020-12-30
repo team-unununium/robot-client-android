@@ -44,14 +44,14 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-
-    }
-
-    @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_settings_overlay, container, false);
+    }
+
+    @Override
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings, rootKey);
     }
 }

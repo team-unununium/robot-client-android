@@ -63,7 +63,7 @@ android {
         buildConfigField "String", "SERVER_OPERATOR_SECRET", "${secureProperties["SERVER_OPERATOR_SECRET"]}"
         buildConfigField "String", "SERVER_CLIENT_SECRET", "${secureProperties["SERVER_CLIENT_SECRET"]}"
         buildConfigField "String", "SERVER_URL", "${secureProperties["SERVER_URL"]}"
-        buildConfigField "String", "CHANNEL_ID", "${secureProperties["CHANNEL_ID"]}"
+        buildConfigField "String", "RTMP_URL", "${secureProperties["RTMP_URL"]}"
         resValue "string", "app_name", "Unununium Client"
     }
 
@@ -105,6 +105,9 @@ dependencies {
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.AppIntro:AppIntro:6.0.0'
+    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.2'
+    implementation 'com.google.android.exoplayer:extension-rtmp:2.12.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation ('io.socket:socket.io-client:2.0.0') {
         // excluding org.json which is provided by Android

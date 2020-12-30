@@ -19,12 +19,10 @@
 package io.github.unununium.util;
 
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.view.View;
-import android.webkit.WebView;
+import android.view.TextureView;
 import android.widget.Toast;
 
-import org.jetbrains.annotations.NotNull;
+import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,43 +32,85 @@ import java.util.Locale;
 
 import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
+import io.github.unununium.fragment.OverlayFragment;
 
 /** An extension to MainActivity that handles the input received by buttons and controllers. **/
 public class InputHandler {
+    public boolean isDay = true;
     private final MainActivity parent;
 
     public InputHandler(MainActivity parent) {
         this.parent = parent;
     }
 
-    /** When a screenshot command is received. Takes a "screenshot" of the WebView and saves it
+    /** When a screenshot command is received. Takes a "screenshot" of the PlayerView and saves it
      * as a bitmap image. **/
     public void onScreenshot() {
-        WebView webView = parent.findViewById(R.id.m1_webview);
-        if (webView != null) {
+        TextureView playerTexture = (TextureView)
+                ((PlayerView) parent.findViewById(R.id.m1_playerview)).getVideoSurfaceView();
+        if (playerTexture != null) {
             Date currentDate = new Date();
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.ENGLISH);
             String filePath = String.format("%s%s",
                     GeneralFunctions.getExternalScreenshotsDir(parent), format.format(currentDate));
             String generatedFilePath = GeneralFunctions
                     .generateValidFile(filePath, ".png");
-            Bitmap result = loadBitmapFromView(webView);
+            Bitmap result = playerTexture.getBitmap();
             // Writes the bitmap to the file, checks whether the path is valid in the process
             try (FileOutputStream out = new FileOutputStream(generatedFilePath)) {
                 result.compress(Bitmap.CompressFormat.PNG, 100, out);
                 Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
                         Toast.LENGTH_LONG).show();
             } catch (IOException e) {
+                Toast.makeText(parent, e.getMessage(), Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
             }
         }
     }
 
-    /** Takes a snapshot of the current view as a bitmap. **/
-    public static Bitmap loadBitmapFromView(@NotNull View v) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth() , v.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.draw(c);
-        return b;
+    /** When the command to invert the colour of the UI is called. **/
+    public void onInvertColour() {
+        isDay = !isDay;
+        if (parent.currentFragment != null && parent.currentFragment instanceof OverlayFragment) {
+            ((OverlayFragment) parent.currentFragment).swapColour(isDay);
+        }
+    }
+
+    /** When the command to hide the overlay is called. **/
+    public void onToggleUI() {
+        boolean uiShouldBeShown = parent.uiIsHidden;
+        if (uiShouldBeShown) {
+            showCurrentFragment();
+        } else {
+            parent.showOverlay(Constants.OverlayType.TYPE_NONE);
+        }
+    }
+
+    /** When the command to toggle the upper overlay is called. **/
+    public void onToggleUpperOverlay() {
+        parent.upperOverlayIsHidden = !parent.upperOverlayIsHidden;
+        if (!parent.uiIsHidden) {
+            showCurrentFragment();
+        }
+    }
+
+    /** When the command to toggle the diagnostics mode is called. **/
+    public void onToggleDiagnosticsMode() {
+        parent.diagnosticsModeEnabled = !parent.diagnosticsModeEnabled;
+        if (!parent.uiIsHidden && parent.upperOverlayIsHidden) {
+            showCurrentFragment();
+        }
+    }
+
+    /** Shows the current fragment that is set by the activity, ignoring whether the UI is showing. **/
+    private void showCurrentFragment() {
+        if (parent.upperOverlayIsHidden) {
+            if (parent.diagnosticsModeEnabled) parent.showOverlay(Constants.OverlayType.TYPE_DIAGNOSTICS);
+            else if (parent.normalOverlayIsText) parent.showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
+            else parent.showOverlay(Constants.OverlayType.TYPE_NORMAL_ICON);
+        } else {
+            if (parent.upperOverlayIsSettings) parent.showOverlay(Constants.OverlayType.TYPE_SETTINGS);
+            else parent.showOverlay(Constants.OverlayType.TYPE_ABOUT);
+        }
     }
 }
