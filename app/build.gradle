@@ -48,11 +48,11 @@ android {
         }
     }
     compileSdkVersion 30
-    buildToolsVersion "30.0.1"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "io.github.unununium"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "0.0.1"
@@ -63,7 +63,8 @@ android {
         buildConfigField "String", "SERVER_OPERATOR_SECRET", "${secureProperties["SERVER_OPERATOR_SECRET"]}"
         buildConfigField "String", "SERVER_CLIENT_SECRET", "${secureProperties["SERVER_CLIENT_SECRET"]}"
         buildConfigField "String", "SERVER_URL", "${secureProperties["SERVER_URL"]}"
-        buildConfigField "String", "RTMP_URL", "${secureProperties["RTMP_URL"]}"
+        buildConfigField "String", "JITSI_ROOM_URL", "${secureProperties["JITSI_ROOM_URL"]}"
+        buildConfigField "String", "JITSI_ROBOT_USER", "${secureProperties["JITSI_ROBOT_USER"]}"
         resValue "string", "app_name", "Unununium Client"
     }
 
@@ -99,20 +100,19 @@ android {
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.preference:preference:1.1.1'
 
     implementation 'com.android.volley:volley:1.1.1'
     implementation 'com.github.AppIntro:AppIntro:6.0.0'
-    implementation 'com.google.android.exoplayer:exoplayer:2.12.2'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.2'
-    implementation 'com.google.android.exoplayer:extension-rtmp:2.12.2'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation ('io.socket:socket.io-client:2.0.0') {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    //noinspection GradleDependency
+    implementation 'org.jitsi.react:jitsi-meet-sdk:3.1.0'
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

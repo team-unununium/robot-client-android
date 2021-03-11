@@ -19,10 +19,9 @@
 package io.github.unununium.util;
 
 import android.graphics.Bitmap;
-import android.view.TextureView;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,28 +42,32 @@ public class InputHandler {
         this.parent = parent;
     }
 
-    /** When a screenshot command is received. Takes a "screenshot" of the PlayerView and saves it
+    /** When a screenshot command is received. Takes a "screenshot" of the FrameLayout and saves it
      * as a bitmap image. **/
     public void onScreenshot() {
-        TextureView playerTexture = (TextureView)
-                ((PlayerView) parent.findViewById(R.id.m1_playerview)).getVideoSurfaceView();
-        if (playerTexture != null) {
-            Date currentDate = new Date();
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.ENGLISH);
-            String filePath = String.format("%s%s",
-                    GeneralFunctions.getExternalScreenshotsDir(parent), format.format(currentDate));
-            String generatedFilePath = GeneralFunctions
-                    .generateValidFile(filePath, ".png");
-            Bitmap result = playerTexture.getBitmap();
-            // Writes the bitmap to the file, checks whether the path is valid in the process
-            try (FileOutputStream out = new FileOutputStream(generatedFilePath)) {
-                result.compress(Bitmap.CompressFormat.PNG, 100, out);
-                Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
-                        Toast.LENGTH_LONG).show();
-            } catch (IOException e) {
-                Toast.makeText(parent, e.getMessage(), Toast.LENGTH_SHORT).show();
-                e.printStackTrace();
-            }
+        // FIXME: Image not appearing in file
+        FrameLayout layout = parent.findViewById(R.id.m1_playerview);
+        layout.setDrawingCacheEnabled(true);
+        // https://stackoverflow.com/a/4618030/8141824
+        layout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
+        layout.buildDrawingCache(true);
+        Bitmap bitmap = layout.getDrawingCache();
+        Date currentDate = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.ENGLISH);
+        String filePath = String.format("%s%s",
+                GeneralFunctions.getExternalScreenshotsDir(parent), format.format(currentDate));
+        String generatedFilePath = GeneralFunctions
+                .generateValidFile(filePath, ".png");
+        // Writes the bitmap to the file, checks whether the path is valid in the process
+        try (FileOutputStream out = new FileOutputStream(generatedFilePath)) {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
+                    Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            Toast.makeText(parent, e.getMessage(), Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
         }
     }
 

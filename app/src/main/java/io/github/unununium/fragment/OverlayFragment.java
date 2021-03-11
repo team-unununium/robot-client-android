@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import io.github.unununium.activity.MainActivity;
 
-/** An overlay Fragment that receives variables from the activity. **/
+/** An overlay Fragment that receives variables from t  he activity. **/
 public abstract class OverlayFragment extends Fragment {
     protected MainActivity parentActivity;
     private boolean initColourSet = false;
@@ -58,9 +58,7 @@ public abstract class OverlayFragment extends Fragment {
     protected void setIntLists() {}
 
     /** Sets the listeners for the view. **/
-    protected void setViewListeners(View view) {
-
-    }
+    protected void setViewListeners(View view) {}
 
     @Override
     public void onResume() {

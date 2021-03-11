@@ -29,7 +29,8 @@ APKs of the latest release would be available on the repository's [release page]
    - `SERVER_OPERATOR_SECRET`: The secret used by the server to identify the client as an operator.
    - `SERVER_CLIENT_SECRET`: The secret used by the server to identify the client as an observer.
    - `SERVER_URL`: The URL that the client connects to.
-   - `RTMP_URL`: The URL that is used to receive the video footage sent by the robot.
+   - `JITSI_ROOM_URL`: The URL of the Jitsi Meet room that is used to receive the video footage sent by the robot.
+   - `JITSI_ROBOT_USER`: The display name of the Pi that is transmitting the video in the Jitsi Meet room.
  - String environmental variables may need to be encased in double quotes.
 
 # If you wish to help

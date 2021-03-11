@@ -19,28 +19,38 @@
 package io.github.unununium.activity;
 
 import android.annotation.SuppressLint;
-import android.net.Uri;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.LoadControl;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.ext.rtmp.RtmpDataSourceFactory;
-import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.ProgressiveMediaSource;
-import com.google.android.exoplayer2.ui.PlayerView;
+import com.facebook.react.modules.core.PermissionListener;
 
 import org.jetbrains.annotations.NotNull;
+import org.jitsi.meet.sdk.BroadcastEvent;
+import org.jitsi.meet.sdk.BroadcastIntentHelper;
+import org.jitsi.meet.sdk.JitsiMeetActivityInterface;
+import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
+import org.jitsi.meet.sdk.JitsiMeetUserInfo;
+import org.jitsi.meet.sdk.JitsiMeetView;
+
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Random;
 
 import io.github.unununium.BuildConfig;
 import io.github.unununium.R;
@@ -55,9 +65,10 @@ import io.github.unununium.util.InputHandler;
 
 /** The main Activity for the app, handles displaying the videos only
  * as the UI is handled by the overlay fragments. **/
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JitsiMeetActivityInterface {
     public Fragment currentFragment = null;
     public InputHandler inputHandler = null;
+    private JitsiMeetView videoCallView = null;
 
     public boolean normalOverlayIsText = false;
     public boolean diagnosticsModeEnabled = false;
@@ -65,79 +76,66 @@ public class MainActivity extends AppCompatActivity {
     public boolean uiIsHidden = false;
     public boolean upperOverlayIsHidden = true;
 
-    private boolean streamStarted = false;
     private int lastControllerID = 0;
+    private final int uid = new Random().nextInt();
     private boolean doubleBackToExitPressedOnce = false;
-    private SimpleExoPlayer player;
 
+    /** A broadcast receiver that forwards the Jitsi Meet intent received to the activity. **/
+    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            onBroadcastReceived(intent);
+        }
+    };
+
+    /** Creates the view and sets up the options for the view. **/
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inputHandler = new InputHandler(MainActivity.this);
-        // Initializes the video player
-        // Reduces buffer to 1s
-        LoadControl bufferSetter = new DefaultLoadControl.Builder().setBufferDurationsMs(
-                Constants.MIN_BUFFER, Constants.MAX_BUFFER,
-                Constants.BUFFER_FOR_PLAYBACK, Constants.BUFFER_FOR_PLAYBACK_AFTER_REBUFFER).build();
-        player = new SimpleExoPlayer.Builder(MainActivity.this).setLoadControl(bufferSetter).build();
-        PlayerView playerView = findViewById(R.id.m1_playerview);
-        playerView.setPlayer(player);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(BroadcastEvent.Type.PARTICIPANT_JOINED.getAction());
+        intentFilter.addAction(BroadcastEvent.Type.PARTICIPANT_LEFT.getAction());
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
+        showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
     }
 
     /** Pauses the live stream. **/
     @Override
     protected void onPause() {
         super.onPause();
-        pauseStream();
+        stopCall();
     }
 
     /** Resumes the live stream. **/
     @Override
     protected void onResume() {
         super.onResume();
-        if (streamStarted) {
-            resumeStream();
-        } else {
-            startStream();
-        }
         setImmersiveSticky();
-    }
-
-    /** Starting to play the stream on the player. **/
-    private void startStream() {
-        MediaItem streamObject = MediaItem.fromUri(Uri.parse(BuildConfig.RTMP_URL));
-        RtmpDataSourceFactory dataSourceFactory = new RtmpDataSourceFactory();
-        MediaSource videoSource = new ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(streamObject);
-        if (player != null) {
-            player.setMediaSource(videoSource);
-            player.prepare();
-            resumeStream();
-            streamStarted = true;
-        }
-        // showOverlay hitches a ride to be shown here
-        // Show the text view by default
-        showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
-    }
-
-    /** Pauses the stream on the player. **/
-    private void pauseStream() {
-        if (player != null) player.setPlayWhenReady(false);
+        joinCall();
     }
 
     /** Resumes the stream on the player. **/
-    private void resumeStream() {
-        if (player != null) player.setPlayWhenReady(true);
+    private void joinCall() {
+        JitsiMeetConferenceOptions conferenceOptions = initConferenceOptions();
+        if (videoCallView == null) initVideoCallView();
+        videoCallView.join(conferenceOptions);
     }
 
-    /** Stops the stream on the player. **/
-    private void stopStream() {
-        if (player != null) {
-            player.stop();
-            player.release();
-        }
+    /** Initializes the video call view and adds it to the FrameLayout, deleting any previous
+     * video call views that may exist. **/
+    private void initVideoCallView() {
+        FrameLayout videoCallRoot = findViewById(R.id.m1_playerview);
+        videoCallRoot.removeAllViews();
+        videoCallView = new JitsiMeetView(MainActivity.this);
+        videoCallRoot.addView(videoCallView);
+    }
+
+    /** Stops the video call. **/
+    private void stopCall() {
+        if (videoCallView != null) videoCallView.leave();
     }
 
     /** Set the top bar of the screen to be hidden. **/
@@ -159,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                 ((FragmentOnBackPressed) currentFragment).onBackPressed()) {
             // Press back to exit
             if (doubleBackToExitPressedOnce) {
-                stopStream();
+                stopCall();
                 GeneralFunctions.exitApp(MainActivity.this);
             } else {
                 this.doubleBackToExitPressedOnce = true;
@@ -167,6 +165,13 @@ public class MainActivity extends AppCompatActivity {
                 new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 1500);
             }
         }
+    }
+
+    /** Delegates the movements of the controller to the input handler. **/
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        return super.onGenericMotionEvent(event);
+        // TODO: Complete
     }
 
     /** Delegates the inputs by the controller to the input handler. **/
@@ -179,6 +184,10 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         switch (keyCode) {
+            case KeyEvent.KEYCODE_BUTTON_THUMBL:
+            case KeyEvent.KEYCODE_BUTTON_THUMBR:
+                // Prevent L1 and R1 from being triggered by joystick button presses
+                break;
             case KeyEvent.KEYCODE_BUTTON_X:
                 // TODO: Start / stop moving
                 break;
@@ -202,10 +211,6 @@ public class MainActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
                 // Allow some leeway for error
                 // TODO: Increase speed
-                break;
-            case KeyEvent.KEYCODE_BUTTON_THUMBL:
-            case KeyEvent.KEYCODE_BUTTON_THUMBR:
-                // Prevent L1 and R1 from being triggered by joystick button presses
                 break;
             case KeyEvent.KEYCODE_BUTTON_L1:
                 inputHandler.onScreenshot();
@@ -293,5 +298,59 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(R.id.m1_overlay, currentFragment, "MainActivity.Overlay");
         }
         ft.commit();
+    }
+
+    /** Initializes the conference options for the meeting. **/
+    private JitsiMeetConferenceOptions initConferenceOptions() {
+        JitsiMeetUserInfo userInfo = new JitsiMeetUserInfo();
+        userInfo.setDisplayName(String.format(Locale.ENGLISH, "UC v%s %d",
+                BuildConfig.VERSION_NAME, uid));
+        return new JitsiMeetConferenceOptions.Builder()
+                .setUserInfo(userInfo)
+                .setRoom(BuildConfig.JITSI_ROOM_URL)
+                .setVideoMuted(true)
+                .setAudioMuted(true)
+                .setAudioOnly(false)
+                .setWelcomePageEnabled(false)
+                .build();
+    }
+
+    /** The broadcast receiver for the Jitsi Meet view. **/
+    private void onBroadcastReceived(Intent intent) {
+        if (intent != null) {
+            BroadcastEvent event = new BroadcastEvent(intent);
+            switch (event.getType()) {
+                case CONFERENCE_JOINED:
+                case CONFERENCE_WILL_JOIN:
+                case CONFERENCE_TERMINATED:
+                case PARTICIPANT_LEFT:
+                    break;
+                case PARTICIPANT_JOINED:
+                    onParticipantJoined(event.getData());
+                    break;
+            }
+        }
+    }
+
+    /** Checks for whether the target user just entered if it is not already being focused on. **/
+    private void onParticipantJoined(@NotNull HashMap<String, Object> data) {
+        String displayName = (String) data.get("name");
+        String id = (String) data.get("participantId");
+        if (Objects.equals(displayName, BuildConfig.JITSI_ROBOT_USER)) {
+            Intent pinParticipantIntent = BroadcastIntentHelper.buildSelectUserVideoIntent(id);
+            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pinParticipantIntent);
+        }
+    }
+
+    /** Stub function. **/
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
+    }
+
+    /** Request the permissions needed. **/
+    @Override
+    public void requestPermissions(String[] strings, int i, PermissionListener permissionListener) {
+        super.requestPermissions(strings, i);
     }
 }

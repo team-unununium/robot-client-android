@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -41,9 +42,11 @@ import java.nio.charset.StandardCharsets;
 import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
 
-public class AboutOverlayFragment extends OverlayFragment {
+public class AboutOverlayFragment extends Fragment {
+    private MainActivity parentActivity;
+
     public AboutOverlayFragment(MainActivity parentActivity) {
-        super(parentActivity, true); // AboutFragment's colour will not be inverted
+        this.parentActivity = parentActivity;
     }
 
     /** @return the HTML file of the About stage as a String. **/

@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -89,15 +88,15 @@ public class NormalOverlayFragment extends OverlayFragment {
     @Override
     protected void setViewListeners(@NotNull View view) {
         if (isText) {
-            ((ImageButton) view.findViewById(R.id.overlay_text_screenshot))
-                    .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onScreenshot());
-            ((ImageButton) view.findViewById(R.id.overlay_text_settings))
-                    .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onToggleUpperOverlay());
+            view.findViewById(R.id.overlay_text_screenshot)
+                    .setOnClickListener(v -> parentActivity.inputHandler.onScreenshot());
+            view.findViewById(R.id.overlay_text_settings)
+                    .setOnClickListener(v -> parentActivity.inputHandler.onToggleUpperOverlay());
         } else {
-            ((ImageButton) view.findViewById(R.id.overlay_icon_screenshot))
-                    .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onScreenshot());
-            ((ImageButton) view.findViewById(R.id.overlay_icon_settings))
-                    .setOnClickListener((View.OnClickListener) v -> parentActivity.inputHandler.onToggleUpperOverlay());
+            view.findViewById(R.id.overlay_icon_screenshot)
+                    .setOnClickListener(v -> parentActivity.inputHandler.onScreenshot());
+            view.findViewById(R.id.overlay_icon_settings)
+                    .setOnClickListener(v -> parentActivity.inputHandler.onToggleUpperOverlay());
         }
     }
 

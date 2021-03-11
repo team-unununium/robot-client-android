@@ -97,7 +97,7 @@ public class WelcomeActivity extends AppIntro {
     private void addWelcomeSlide() {
         addSlide(AppIntroFragment.newInstance(getString(R.string.intro_slide_1_title),
                 getString(R.string.intro_slide_1_desc),
-                R.drawable.ic_appintro_next, // Image Drawable
+                com.github.appintro.R.drawable.ic_appintro_next, // Image Drawable
                 ContextCompat.getColor(WelcomeActivity.this, R.color.colorPrimary), // Background color
                 Color.WHITE, Color.WHITE)); // Title and description color
         totalSlideCount += 1;

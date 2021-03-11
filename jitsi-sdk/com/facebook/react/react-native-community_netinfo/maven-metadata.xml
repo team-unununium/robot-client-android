@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>com.facebook.react</groupId>
+  <artifactId>react-native-community_netinfo</artifactId>
+  <versioning>
+    <latest>4.1.5-jitsi-6910374</latest>
+    <release>4.1.5-jitsi-6910374</release>
+    <versions>
+      <version>4.1.5-jitsi-6899540</version>
+      <version>4.1.5-jitsi-6910374</version>
+    </versions>
+    <lastUpdated>20210310182902</lastUpdated>
+  </versioning>
+</metadata>

@@ -20,20 +20,15 @@
 <!-- The PlayerView is set in the FrameLayout in case some other stuff needs to be added -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/m1_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
-    <com.google.android.exoplayer2.ui.PlayerView
+    <FrameLayout
         android:id="@+id/m1_playerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:use_controller="false"
-        app:surface_type="texture_view" >
-
-    </com.google.android.exoplayer2.ui.PlayerView>
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/m1_overlay"

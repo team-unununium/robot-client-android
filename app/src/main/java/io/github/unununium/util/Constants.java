@@ -77,7 +77,7 @@ public class Constants {
 
     // Tested buffer settings optimized for low latency streaming
     public static final int MIN_BUFFER = 1000;
-    public static final int MAX_BUFFER = 2800; // Can't go below this, otherwise the image would not be displayed
+    public static final int MAX_BUFFER = 2500; // Can't go below this, otherwise the image would not be displayed
     public static final int BUFFER_FOR_PLAYBACK = 500;
     public static final int BUFFER_FOR_PLAYBACK_AFTER_REBUFFER = 500;
 }
