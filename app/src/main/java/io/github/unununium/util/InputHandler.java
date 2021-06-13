@@ -45,7 +45,7 @@ public class InputHandler {
     /** When a screenshot command is received. Takes a "screenshot" of the FrameLayout and saves it
      * as a bitmap image. **/
     public void onScreenshot() {
-        // FIXME: Image not appearing in file
+        // TODO: Update code for VideoView
         FrameLayout layout = parent.findViewById(R.id.m1_playerview);
         layout.setDrawingCacheEnabled(true);
         // https://stackoverflow.com/a/4618030/8141824

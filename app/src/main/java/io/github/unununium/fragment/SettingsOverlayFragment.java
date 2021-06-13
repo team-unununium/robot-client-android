@@ -29,8 +29,9 @@ import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
+import io.github.unununium.util.FragmentOnBackPressed;
 
-public class SettingsOverlayFragment extends PreferenceFragmentCompat {
+public class SettingsOverlayFragment extends PreferenceFragmentCompat implements FragmentOnBackPressed {
     private MainActivity parentActivity;
 
     public SettingsOverlayFragment(MainActivity parentActivity) {
@@ -44,14 +45,13 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat {
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings_overlay, container, false);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.settings, rootKey);
     }
 
     @Override
-    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        setPreferencesFromResource(R.xml.settings, rootKey);
+    public boolean onBackPressed() {
+        parentActivity.inputHandler.onToggleUpperOverlay();
+        return false;
     }
 }

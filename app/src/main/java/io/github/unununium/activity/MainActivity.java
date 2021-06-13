@@ -19,40 +19,22 @@
 package io.github.unununium.activity;
 
 import android.annotation.SuppressLint;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-
-import com.facebook.react.modules.core.PermissionListener;
 
 import org.jetbrains.annotations.NotNull;
-import org.jitsi.meet.sdk.BroadcastEvent;
-import org.jitsi.meet.sdk.BroadcastIntentHelper;
-import org.jitsi.meet.sdk.JitsiMeetActivityInterface;
-import org.jitsi.meet.sdk.JitsiMeetConferenceOptions;
-import org.jitsi.meet.sdk.JitsiMeetUserInfo;
-import org.jitsi.meet.sdk.JitsiMeetView;
 
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Objects;
 import java.util.Random;
 
-import io.github.unununium.BuildConfig;
 import io.github.unununium.R;
 import io.github.unununium.fragment.AboutOverlayFragment;
 import io.github.unununium.fragment.DiagnosticsOverlayFragment;
@@ -65,10 +47,9 @@ import io.github.unununium.util.InputHandler;
 
 /** The main Activity for the app, handles displaying the videos only
  * as the UI is handled by the overlay fragments. **/
-public class MainActivity extends AppCompatActivity implements JitsiMeetActivityInterface {
+public class MainActivity extends AppCompatActivity {
     public Fragment currentFragment = null;
     public InputHandler inputHandler = null;
-    private JitsiMeetView videoCallView = null;
 
     public boolean normalOverlayIsText = false;
     public boolean diagnosticsModeEnabled = false;
@@ -80,14 +61,6 @@ public class MainActivity extends AppCompatActivity implements JitsiMeetActivity
     private final int uid = new Random().nextInt();
     private boolean doubleBackToExitPressedOnce = false;
 
-    /** A broadcast receiver that forwards the Jitsi Meet intent received to the activity. **/
-    private final BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            onBroadcastReceived(intent);
-        }
-    };
-
     /** Creates the view and sets up the options for the view. **/
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -95,10 +68,6 @@ public class MainActivity extends AppCompatActivity implements JitsiMeetActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         inputHandler = new InputHandler(MainActivity.this);
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(BroadcastEvent.Type.PARTICIPANT_JOINED.getAction());
-        intentFilter.addAction(BroadcastEvent.Type.PARTICIPANT_LEFT.getAction());
-        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, intentFilter);
         showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
     }
 
@@ -119,23 +88,12 @@ public class MainActivity extends AppCompatActivity implements JitsiMeetActivity
 
     /** Resumes the stream on the player. **/
     private void joinCall() {
-        JitsiMeetConferenceOptions conferenceOptions = initConferenceOptions();
-        if (videoCallView == null) initVideoCallView();
-        videoCallView.join(conferenceOptions);
-    }
-
-    /** Initializes the video call view and adds it to the FrameLayout, deleting any previous
-     * video call views that may exist. **/
-    private void initVideoCallView() {
-        FrameLayout videoCallRoot = findViewById(R.id.m1_playerview);
-        videoCallRoot.removeAllViews();
-        videoCallView = new JitsiMeetView(MainActivity.this);
-        videoCallRoot.addView(videoCallView);
+        // TODO: Complete
     }
 
     /** Stops the video call. **/
     private void stopCall() {
-        if (videoCallView != null) videoCallView.leave();
+        // TODO: Complete
     }
 
     /** Set the top bar of the screen to be hidden. **/
@@ -300,57 +258,9 @@ public class MainActivity extends AppCompatActivity implements JitsiMeetActivity
         ft.commit();
     }
 
-    /** Initializes the conference options for the meeting. **/
-    private JitsiMeetConferenceOptions initConferenceOptions() {
-        JitsiMeetUserInfo userInfo = new JitsiMeetUserInfo();
-        userInfo.setDisplayName(String.format(Locale.ENGLISH, "UC v%s %d",
-                BuildConfig.VERSION_NAME, uid));
-        return new JitsiMeetConferenceOptions.Builder()
-                .setUserInfo(userInfo)
-                .setRoom(BuildConfig.JITSI_ROOM_URL)
-                .setVideoMuted(true)
-                .setAudioMuted(true)
-                .setAudioOnly(false)
-                .setWelcomePageEnabled(false)
-                .build();
-    }
-
-    /** The broadcast receiver for the Jitsi Meet view. **/
-    private void onBroadcastReceived(Intent intent) {
-        if (intent != null) {
-            BroadcastEvent event = new BroadcastEvent(intent);
-            switch (event.getType()) {
-                case CONFERENCE_JOINED:
-                case CONFERENCE_WILL_JOIN:
-                case CONFERENCE_TERMINATED:
-                case PARTICIPANT_LEFT:
-                    break;
-                case PARTICIPANT_JOINED:
-                    onParticipantJoined(event.getData());
-                    break;
-            }
-        }
-    }
-
-    /** Checks for whether the target user just entered if it is not already being focused on. **/
-    private void onParticipantJoined(@NotNull HashMap<String, Object> data) {
-        String displayName = (String) data.get("name");
-        String id = (String) data.get("participantId");
-        if (Objects.equals(displayName, BuildConfig.JITSI_ROBOT_USER)) {
-            Intent pinParticipantIntent = BroadcastIntentHelper.buildSelectUserVideoIntent(id);
-            LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(pinParticipantIntent);
-        }
-    }
-
     /** Stub function. **/
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
-    }
-
-    /** Request the permissions needed. **/
-    @Override
-    public void requestPermissions(String[] strings, int i, PermissionListener permissionListener) {
-        super.requestPermissions(strings, i);
     }
 }

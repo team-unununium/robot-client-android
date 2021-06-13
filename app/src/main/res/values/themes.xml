@@ -31,6 +31,19 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
         <item name="android:textSize">18sp</item>
+        <item name="preferenceTheme">
+            @style/AppPreferenceTheme
+        </item>
+    </style>
+
+    <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">
+        <item name="preferenceFragmentCompatStyle">
+            @style/AppPreferenceFragmentCompatStyle
+        </item>
+    </style>
+
+    <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
+        <item name="android:layout">@layout/fragment_settings_overlay</item>
     </style>
 
     <style name="NoActionBar" parent="Theme.UnununiumClient">
