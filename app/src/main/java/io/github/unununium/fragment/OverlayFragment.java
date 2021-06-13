@@ -39,6 +39,7 @@ public abstract class OverlayFragment extends Fragment {
     protected int[] imageViewList = new int[]{};
     protected int[] dayImageResList = new int[]{};
     protected int[] nightImageResList = new int[]{};
+    protected int[] operatorOnlyList = new int[]{};
 
     public OverlayFragment(MainActivity parentActivity, boolean initIsDay) {
         this.parentActivity = parentActivity;
@@ -59,6 +60,17 @@ public abstract class OverlayFragment extends Fragment {
 
     /** Sets the listeners for the view. **/
     protected void setViewListeners(View view) {}
+
+    /** Sets whether operator specific views are visible. **/
+    public void setOperatorViewsVisibility(View v, boolean visible) {
+        View targetView = v == null ? getView() : v;
+        if (targetView != null) {
+            for (int i : operatorOnlyList) {
+                if (targetView.findViewById(i) != null)
+                    targetView.findViewById(i).setVisibility(visible ? View.VISIBLE : View.INVISIBLE);
+            }
+        }
+    }
 
     @Override
     public void onResume() {

@@ -18,8 +18,9 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.UnununiumClient" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.UnununiumClient" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Primary brand color. -->
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
         <item name="colorPrimary">@color/purple_200</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
         <item name="colorOnPrimary">@color/black</item>
@@ -37,12 +38,6 @@
     </style>
 
     <style name="AppPreferenceTheme" parent="@style/PreferenceThemeOverlay">
-        <item name="preferenceFragmentCompatStyle">
-            @style/AppPreferenceFragmentCompatStyle
-        </item>
-    </style>
-
-    <style name="AppPreferenceFragmentCompatStyle" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/fragment_settings_overlay</item>
     </style>
 

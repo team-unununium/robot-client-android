@@ -20,8 +20,8 @@ package io.github.unununium.util;
 
 import android.graphics.Bitmap;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,7 +46,7 @@ public class InputHandler {
      * as a bitmap image. **/
     public void onScreenshot() {
         // TODO: Update code for VideoView
-        FrameLayout layout = parent.findViewById(R.id.m1_playerview);
+        VideoView layout = parent.findViewById(R.id.m1_playerview);
         layout.setDrawingCacheEnabled(true);
         // https://stackoverflow.com/a/4618030/8141824
         layout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
@@ -65,7 +65,7 @@ public class InputHandler {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
                     Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
+        } catch (NullPointerException | IOException e) {
             Toast.makeText(parent, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }

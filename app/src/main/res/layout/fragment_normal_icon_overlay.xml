@@ -27,21 +27,21 @@
     tools:context=".fragment.NormalOverlayFragment">
 
     <ImageView
+        android:id="@+id/overlay_icon_disconnected"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/state_disconnected"
+        android:src="@drawable/ic_cloud_off_50_day"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
         android:id="@+id/overlay_icon_moving"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/moving"
         android:src="@drawable/ic_car_50_day"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <ImageView
-        android:id="@+id/overlay_icon_disconnected"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/disconnected"
-        android:src="@drawable/ic_cloud_off_50_day"
-        app:layout_constraintStart_toEndOf="@+id/overlay_icon_moving"
+        app:layout_constraintStart_toEndOf="@+id/overlay_icon_disconnected"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton

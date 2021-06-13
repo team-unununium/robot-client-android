@@ -54,6 +54,11 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
         super.imageViewList = new int[]{ R.id.overlay_diag_screenshot, R.id.overlay_diag_settings };
         super.dayImageResList = new int[]{ R.drawable.ic_camera_50_day, R.drawable.ic_settings_50_day };
         super.nightImageResList = new int[]{ R.drawable.ic_camera_50_night, R.drawable.ic_settings_50_night };
+        super.operatorOnlyList = new int[]{ R.id.overlay_diag_start_moving, R.id.overlay_diag_night_mode,
+            R.id.overlay_diag_external_controller, R.id.overlay_diag_phone_mode, R.id.overlay_diag_last_camera_rotation,
+            R.id.overlay_diag_camera_x, R.id.overlay_diag_camera_y, R.id.overlay_diag_camera_z,
+            R.id.overlay_diag_last_robot_rotation, R.id.overlay_diag_robot_x, R.id.overlay_diag_robot_y,
+            R.id.overlay_diag_robot_z };
     }
 
     /** Set the onClickListeners for the view. **/
@@ -71,6 +76,7 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
         // Inflate the layout for this fragment
         View returnView = inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
         setViewListeners(returnView);
+        setOperatorViewsVisibility(returnView, parentActivity.params.isOperator());
         return returnView;
     }
 }

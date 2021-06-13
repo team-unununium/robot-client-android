@@ -53,6 +53,7 @@ public class NormalOverlayFragment extends OverlayFragment {
                     R.drawable.ic_cloud_off_50_day, R.drawable.ic_camera_50_day, R.drawable.ic_settings_50_day };
             super.nightImageResList = new int[]{ R.drawable.ic_car_50_night, 
                     R.drawable.ic_cloud_off_50_night, R.drawable.ic_camera_50_night, R.drawable.ic_settings_50_night };
+            super.operatorOnlyList = new int[]{ R.id.overlay_text_moving, R.id.overlay_text_start_moving };
         } else {
             // The temperature and humidity icons' colour are not changed as there are multiple types of icons
             super.textViewList = new int[]{};
@@ -71,6 +72,7 @@ public class NormalOverlayFragment extends OverlayFragment {
                     R.drawable.ic_obstacle_front_night, R.drawable.ic_obstacle_back_night,
                     R.drawable.ic_gas_co_night, R.drawable.ic_gas_ch4_night,
                     R.drawable.ic_gas_h2_night, R.drawable.ic_gas_lpg_night };
+            super.operatorOnlyList = new int[]{ R.id.overlay_icon_moving, R.id.overlay_icon_start_moving };
         }
     }
 
@@ -81,6 +83,7 @@ public class NormalOverlayFragment extends OverlayFragment {
         int res = isText ? R.layout.fragment_normal_text_overlay : R.layout.fragment_normal_icon_overlay;
         View returnView = inflater.inflate(res, container, false);
         setViewListeners(returnView);
+        setOperatorViewsVisibility(returnView, parentActivity.params.isOperator());
         return returnView;
     }
 

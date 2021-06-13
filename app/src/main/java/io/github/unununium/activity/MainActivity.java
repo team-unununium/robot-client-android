@@ -33,10 +33,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Random;
-
 import io.github.unununium.R;
-import io.github.unununium.fragment.AboutOverlayFragment;
+import io.github.unununium.comm.ConnectionParameters;
+import io.github.unununium.comm.ServerConnection;
 import io.github.unununium.fragment.DiagnosticsOverlayFragment;
 import io.github.unununium.fragment.NormalOverlayFragment;
 import io.github.unununium.fragment.SettingsOverlayFragment;
@@ -50,6 +49,8 @@ import io.github.unununium.util.InputHandler;
 public class MainActivity extends AppCompatActivity {
     public Fragment currentFragment = null;
     public InputHandler inputHandler = null;
+    public ConnectionParameters params = new ConnectionParameters();
+    public ServerConnection serverConnection = null;
 
     public boolean normalOverlayIsText = false;
     public boolean diagnosticsModeEnabled = false;
@@ -58,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean upperOverlayIsHidden = true;
 
     private int lastControllerID = 0;
-    private final int uid = new Random().nextInt();
     private boolean doubleBackToExitPressedOnce = false;
 
     /** Creates the view and sets up the options for the view. **/
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 // Prevent L1 and R1 from being triggered by joystick button presses
                 break;
             case KeyEvent.KEYCODE_BUTTON_X:
-                // TODO: Start / stop moving
+                serverConnection.setMoving(!params.isMoving());
                 break;
             case KeyEvent.KEYCODE_BUTTON_Y:
                 inputHandler.onInvertColour();
@@ -162,13 +162,17 @@ public class MainActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:
             case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
                 // Allow some leeway for error
-                // TODO: Decrease speed
+                if (params.getVelocity() > 1) {
+                    serverConnection.setVelocity(params.getVelocity() - 1);
+                }
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_UP_LEFT:
             case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
                 // Allow some leeway for error
-                // TODO: Increase speed
+                if (params.getVelocity() < 3) {
+                    serverConnection.setVelocity(params.getVelocity() + 1);
+                }
                 break;
             case KeyEvent.KEYCODE_BUTTON_L1:
                 inputHandler.onScreenshot();
@@ -193,9 +197,6 @@ public class MainActivity extends AppCompatActivity {
         Fragment targetFragment;
         FragmentManager fm = getSupportFragmentManager();
         switch (overlayType) {
-            case TYPE_ABOUT:
-                targetFragment = new AboutOverlayFragment(MainActivity.this);
-                break;
             case TYPE_SETTINGS:
                 targetFragment = new SettingsOverlayFragment(MainActivity.this);
                 break;
@@ -220,16 +221,9 @@ public class MainActivity extends AppCompatActivity {
             currentFragment = null;
             uiIsHidden = true;
         } else {
-            if (currentFragment instanceof SettingsOverlayFragment) {
-                // TODO: On cancel pressed
-            }
             // No special case for Settings page as the settings are cancelled anyways
             currentFragment = targetFragment;
             switch (overlayType) {
-                case TYPE_ABOUT:
-                    upperOverlayIsSettings = false;
-                    upperOverlayIsHidden = false;
-                    break;
                 case TYPE_SETTINGS:
                     upperOverlayIsSettings = true;
                     upperOverlayIsHidden = false;
@@ -256,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
             ft.replace(R.id.m1_overlay, currentFragment, "MainActivity.Overlay");
         }
         ft.commit();
+        setImmersiveSticky();
     }
 
     /** Stub function. **/
