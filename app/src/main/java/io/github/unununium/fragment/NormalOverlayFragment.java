@@ -83,7 +83,7 @@ public class NormalOverlayFragment extends OverlayFragment {
         int res = isText ? R.layout.fragment_normal_text_overlay : R.layout.fragment_normal_icon_overlay;
         View returnView = inflater.inflate(res, container, false);
         setViewListeners(returnView);
-        setOperatorViewsVisibility(returnView, parentActivity.params.isOperator());
+        setOperatorViewsVisibility(returnView, parentActivity.remoteParams.isOperator());
         return returnView;
     }
 

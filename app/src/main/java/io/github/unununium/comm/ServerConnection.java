@@ -296,6 +296,8 @@ public class ServerConnection {
 
     public void setOperator(boolean isOperator) {
         params.isOperator = isOperator;
+        terminateConnection();
+        createConnection();
         valueHandler.onOperatorChanged();
     }
 
@@ -313,10 +315,12 @@ public class ServerConnection {
 
     public void setMoving(boolean moving) {
         params.isMoving = moving;
-        if (moving) {
-            socket.emit("startMoving");
-        } else {
-            socket.emit("stopMoving");
+        if (socket != null) {
+            if (moving) {
+                socket.emit("startMoving");
+            } else {
+                socket.emit("stopMoving");
+            }
         }
         valueHandler.onMovementChanged();
     }

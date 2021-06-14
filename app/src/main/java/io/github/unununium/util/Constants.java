@@ -29,7 +29,6 @@ public class Constants {
         TYPE_DIAGNOSTICS,
         TYPE_NORMAL_TEXT,
         TYPE_NORMAL_ICON,
-        TYPE_ABOUT,
         TYPE_SETTINGS,
         TYPE_NONE
     }

@@ -22,7 +22,7 @@ import java.util.UUID;
 
 import io.github.unununium.R;
 
-/** The parameters that are currently being used in the app. **/
+/** The parameters that are currently being used in the app to connect with the server. **/
 public class ConnectionParameters {
     public enum State {
         DISCONNECTED,

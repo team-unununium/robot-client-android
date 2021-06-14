@@ -35,6 +35,7 @@ import org.jetbrains.annotations.NotNull;
 
 import io.github.unununium.R;
 import io.github.unununium.comm.ConnectionParameters;
+import io.github.unununium.comm.LocalParameters;
 import io.github.unununium.comm.ServerConnection;
 import io.github.unununium.fragment.DiagnosticsOverlayFragment;
 import io.github.unununium.fragment.NormalOverlayFragment;
@@ -43,22 +44,18 @@ import io.github.unununium.util.Constants;
 import io.github.unununium.util.FragmentOnBackPressed;
 import io.github.unununium.util.GeneralFunctions;
 import io.github.unununium.util.InputHandler;
+import io.github.unununium.util.ValueHandler;
 
 /** The main Activity for the app, handles displaying the videos only
  * as the UI is handled by the overlay fragments. **/
 public class MainActivity extends AppCompatActivity {
     public Fragment currentFragment = null;
     public InputHandler inputHandler = null;
-    public ConnectionParameters params = new ConnectionParameters();
+    public ValueHandler valueHandler = null;
+    public ConnectionParameters remoteParams = new ConnectionParameters();
+    public LocalParameters localParams = new LocalParameters();
     public ServerConnection serverConnection = null;
 
-    public boolean normalOverlayIsText = false;
-    public boolean diagnosticsModeEnabled = false;
-    public boolean upperOverlayIsSettings = true;
-    public boolean uiIsHidden = false;
-    public boolean upperOverlayIsHidden = true;
-
-    private int lastControllerID = 0;
     private boolean doubleBackToExitPressedOnce = false;
 
     /** Creates the view and sets up the options for the view. **/
@@ -67,7 +64,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        localParams = GeneralFunctions.restoreLocalParameters(MainActivity.this);
         inputHandler = new InputHandler(MainActivity.this);
+        valueHandler = new ValueHandler(MainActivity.this, remoteParams);
+        serverConnection = new ServerConnection(MainActivity.this, valueHandler);
         showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
     }
 
@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         stopCall();
+        GeneralFunctions.storeLocalParameters(MainActivity.this, localParams);
     }
 
     /** Resumes the live stream. **/
@@ -147,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 // Prevent L1 and R1 from being triggered by joystick button presses
                 break;
             case KeyEvent.KEYCODE_BUTTON_X:
-                serverConnection.setMoving(!params.isMoving());
+                if (remoteParams.isOperator()) serverConnection.setMoving(!remoteParams.isMoving());
                 break;
             case KeyEvent.KEYCODE_BUTTON_Y:
                 inputHandler.onInvertColour();
@@ -162,16 +163,16 @@ public class MainActivity extends AppCompatActivity {
             case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:
             case KeyEvent.KEYCODE_DPAD_DOWN_RIGHT:
                 // Allow some leeway for error
-                if (params.getVelocity() > 1) {
-                    serverConnection.setVelocity(params.getVelocity() - 1);
+                if (remoteParams.isOperator() && remoteParams.getVelocity() > 1) {
+                    serverConnection.setVelocity(remoteParams.getVelocity() - 1);
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_UP:
             case KeyEvent.KEYCODE_DPAD_UP_LEFT:
             case KeyEvent.KEYCODE_DPAD_UP_RIGHT:
                 // Allow some leeway for error
-                if (params.getVelocity() < 3) {
-                    serverConnection.setVelocity(params.getVelocity() + 1);
+                if (remoteParams.isOperator() && remoteParams.getVelocity() < 3) {
+                    serverConnection.setVelocity(remoteParams.getVelocity() + 1);
                 }
                 break;
             case KeyEvent.KEYCODE_BUTTON_L1:
@@ -187,7 +188,6 @@ public class MainActivity extends AppCompatActivity {
             default:
                 return false;
         }
-        lastControllerID = event.getDeviceId();
         return true;
     }
 
@@ -201,13 +201,13 @@ public class MainActivity extends AppCompatActivity {
                 targetFragment = new SettingsOverlayFragment(MainActivity.this);
                 break;
             case TYPE_DIAGNOSTICS:
-                targetFragment = new DiagnosticsOverlayFragment(MainActivity.this, inputHandler.isDay);
+                targetFragment = new DiagnosticsOverlayFragment(MainActivity.this, localParams.isDay);
                 break;
             case TYPE_NORMAL_TEXT:
-                targetFragment = new NormalOverlayFragment(MainActivity.this, true, inputHandler.isDay);
+                targetFragment = new NormalOverlayFragment(MainActivity.this, true, localParams.isDay);
                 break;
             case TYPE_NORMAL_ICON:
-                targetFragment = new NormalOverlayFragment(MainActivity.this, false, inputHandler.isDay);
+                targetFragment = new NormalOverlayFragment(MainActivity.this, false, localParams.isDay);
                 break;
             default:
                 // Used to hide the UI
@@ -219,34 +219,33 @@ public class MainActivity extends AppCompatActivity {
         if (targetFragment == null) {
             if (currentFragment != null) ft.remove(currentFragment);
             currentFragment = null;
-            uiIsHidden = true;
+            localParams.uiIsHidden = true;
         } else {
             // No special case for Settings page as the settings are cancelled anyways
             currentFragment = targetFragment;
             switch (overlayType) {
                 case TYPE_SETTINGS:
-                    upperOverlayIsSettings = true;
-                    upperOverlayIsHidden = false;
+                    localParams.upperOverlayIsHidden = false;
                     break;
                 case TYPE_DIAGNOSTICS:
-                    diagnosticsModeEnabled = true;
-                    upperOverlayIsHidden = true;
+                    localParams.diagnosticsModeEnabled = true;
+                    localParams.upperOverlayIsHidden = true;
                     break;
                 case TYPE_NORMAL_ICON:
-                    normalOverlayIsText = false;
-                    diagnosticsModeEnabled = false;
-                    upperOverlayIsHidden = true;
+                    localParams.normalOverlayIsText = false;
+                    localParams.diagnosticsModeEnabled = false;
+                    localParams.upperOverlayIsHidden = true;
                     break;
                 case TYPE_NORMAL_TEXT:
-                    normalOverlayIsText = true;
-                    diagnosticsModeEnabled = false;
-                    upperOverlayIsHidden = true;
+                    localParams.normalOverlayIsText = true;
+                    localParams.diagnosticsModeEnabled = false;
+                    localParams.upperOverlayIsHidden = true;
                     break;
                 case TYPE_NONE:
                     // It should be handled in the above statement already
                     break;
             }
-            uiIsHidden = false;
+            localParams.uiIsHidden = false;
             ft.replace(R.id.m1_overlay, currentFragment, "MainActivity.Overlay");
         }
         ft.commit();

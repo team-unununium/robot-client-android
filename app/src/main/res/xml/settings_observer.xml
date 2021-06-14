@@ -25,29 +25,6 @@
         android:key="pref_controller_mode"
         android:title="@string/pref_controller_mode" />
     <PreferenceCategory
-        android:id="@+id/pref_category_controller"
-        android:title="@string/pref_category_controller">
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="pref_enable_external_controller"
-            android:title="@string/pref_enable_external_controller" />
-        <ListPreference
-            android:defaultValue="false"
-            android:entries="@array/pref_phone_control"
-            android:entryValues="@array/pref_three"
-            android:key="pref_phone_controls"
-            android:title="@string/pref_control_with_phone" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="pref_start_moving"
-            android:title="@string/pref_start_moving" />
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="pref_night_mode"
-            android:title="@string/pref_night_mode" />
-    </PreferenceCategory>
-    <PreferenceCategory
         android:id="@+id/pref_category_ui"
         android:title="@string/pref_category_ui">
 
@@ -69,13 +46,13 @@
         android:title="@string/temperature">
 
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="20.0"
             android:key="pref_lower_temp_bound"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_lower_temp_bound" />
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="60.0"
             android:key="pref_upper_temp_bound"
             android:selectAllOnFocus="true"
             android:singleLine="true"
@@ -86,14 +63,14 @@
         android:title="@string/humidity">
 
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="0.40"
             android:key="pref_lower_humidity_bound"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_lower_humidity_bound" />
         <EditTextPreference
-            android:defaultValue="Default value"
-            android:key="@string/pref_upper_humidity_bound"
+            android:defaultValue="0.88"
+            android:key="pref_upper_humidity_bound"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_upper_humidity_bound" />
@@ -103,13 +80,13 @@
         android:title="@string/obstacle">
 
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="200"
             android:key="pref_front_obstacle"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_front_obstacle_warning" />
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="200"
             android:key="pref_rear_obstacle"
             android:selectAllOnFocus="true"
             android:singleLine="true"
@@ -120,25 +97,25 @@
         android:title="@string/pref_category_gas">
 
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="0.00"
             android:key="pref_co_level"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_co_level" />
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="0.00"
             android:key="pref_ch4_level"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_ch4_level" />
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="0.00"
             android:key="pref_h2_level"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_h2_level" />
         <EditTextPreference
-            android:defaultValue="Default value"
+            android:defaultValue="0.00"
             android:key="pref_lpg_level"
             android:selectAllOnFocus="true"
             android:singleLine="true"

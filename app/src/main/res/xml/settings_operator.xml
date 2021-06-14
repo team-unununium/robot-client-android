@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This program is the client app for Team Unununium's VR Robot Explorer found at <https://github.com/team-unununium>
+  ~ Copyright (C) 2020 Team Unununium
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/> .
+  -->
+
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_controller_mode"
+        android:title="@string/pref_controller_mode" />
+    <PreferenceCategory
+        android:id="@+id/pref_category_controller"
+        android:title="@string/pref_category_controller">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_enable_external_controller"
+            android:title="@string/pref_enable_external_controller" />
+        <ListPreference
+            android:defaultValue="false"
+            android:entries="@array/pref_phone_control"
+            android:entryValues="@array/pref_three"
+            android:key="pref_phone_controls"
+            android:title="@string/pref_control_with_phone" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_start_moving"
+            android:title="@string/pref_start_moving" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_night_mode"
+            android:title="@string/pref_night_mode" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_ui"
+        android:title="@string/pref_category_ui">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_toggle_ui_visibility"
+            android:title="@string/pref_toggle_ui_visibility" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_invert_ui_colour"
+            android:title="@string/pref_invert_ui_colour" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_display_icons"
+            android:title="@string/pref_display_icons" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_temperature"
+        android:title="@string/temperature">
+
+        <EditTextPreference
+            android:defaultValue="20.0"
+            android:key="pref_lower_temp_bound"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_lower_temp_bound" />
+        <EditTextPreference
+            android:defaultValue="60.0"
+            android:key="pref_upper_temp_bound"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_upper_temp_bound" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_humidity"
+        android:title="@string/humidity">
+
+        <EditTextPreference
+            android:defaultValue="0.40"
+            android:key="pref_lower_humidity_bound"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_lower_humidity_bound" />
+        <EditTextPreference
+            android:defaultValue="0.88"
+            android:key="@string/pref_upper_humidity_bound"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_upper_humidity_bound" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_obstacles"
+        android:title="@string/obstacle">
+
+        <EditTextPreference
+            android:defaultValue="200"
+            android:key="pref_front_obstacle"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_front_obstacle_warning" />
+        <EditTextPreference
+            android:defaultValue="200"
+            android:key="pref_rear_obstacle"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_rear_obstacle_warning" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_gas"
+        android:title="@string/pref_category_gas">
+
+        <EditTextPreference
+            android:defaultValue="0.00"
+            android:key="pref_co_level"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_co_level" />
+        <EditTextPreference
+            android:defaultValue="0.00"
+            android:key="pref_ch4_level"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_ch4_level" />
+        <EditTextPreference
+            android:defaultValue="0.00"
+            android:key="pref_h2_level"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_h2_level" />
+        <EditTextPreference
+            android:defaultValue="0.00"
+            android:key="pref_lpg_level"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/pref_lpg_level" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:id="@+id/pref_category_others"
+        android:title="@string/others">
+
+        <Preference
+            android:id="@+id/pref_about_id"
+            app:key="pref_about"
+            app:title="@string/pref_about" />
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_diagnostics"
+            android:title="@string/pref_diagnostics" />
+    </PreferenceCategory>
+</PreferenceScreen>

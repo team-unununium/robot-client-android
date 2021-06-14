@@ -35,7 +35,6 @@ import io.github.unununium.fragment.OverlayFragment;
 
 /** An extension to MainActivity that handles the input received by buttons and controllers. **/
 public class InputHandler {
-    public boolean isDay = true;
     private final MainActivity parent;
 
     public InputHandler(MainActivity parent) {
@@ -73,15 +72,15 @@ public class InputHandler {
 
     /** When the command to invert the colour of the UI is called. **/
     public void onInvertColour() {
-        isDay = !isDay;
+        parent.localParams.isDay = !parent.localParams.isDay;
         if (parent.currentFragment != null && parent.currentFragment instanceof OverlayFragment) {
-            ((OverlayFragment) parent.currentFragment).swapColour(isDay);
+            ((OverlayFragment) parent.currentFragment).swapColour(parent.localParams.isDay);
         }
     }
 
     /** When the command to hide the overlay is called. **/
     public void onToggleUI() {
-        boolean uiShouldBeShown = parent.uiIsHidden;
+        boolean uiShouldBeShown = parent.localParams.uiIsHidden;
         if (uiShouldBeShown) {
             showCurrentFragment();
         } else {
@@ -91,29 +90,28 @@ public class InputHandler {
 
     /** When the command to toggle the upper overlay is called. **/
     public void onToggleUpperOverlay() {
-        parent.upperOverlayIsHidden = !parent.upperOverlayIsHidden;
-        if (!parent.uiIsHidden) {
+        parent.localParams.upperOverlayIsHidden = !parent.localParams.upperOverlayIsHidden;
+        if (!parent.localParams.uiIsHidden) {
             showCurrentFragment();
         }
     }
 
     /** When the command to toggle the diagnostics mode is called. **/
     public void onToggleDiagnosticsMode() {
-        parent.diagnosticsModeEnabled = !parent.diagnosticsModeEnabled;
-        if (!parent.uiIsHidden && parent.upperOverlayIsHidden) {
+        parent.localParams.diagnosticsModeEnabled = !parent.localParams.diagnosticsModeEnabled;
+        if (!parent.localParams.uiIsHidden && parent.localParams.upperOverlayIsHidden) {
             showCurrentFragment();
         }
     }
 
     /** Shows the current fragment that is set by the activity, ignoring whether the UI is showing. **/
     private void showCurrentFragment() {
-        if (parent.upperOverlayIsHidden) {
-            if (parent.diagnosticsModeEnabled) parent.showOverlay(Constants.OverlayType.TYPE_DIAGNOSTICS);
-            else if (parent.normalOverlayIsText) parent.showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
+        if (parent.localParams.upperOverlayIsHidden) {
+            if (parent.localParams.diagnosticsModeEnabled) parent.showOverlay(Constants.OverlayType.TYPE_DIAGNOSTICS);
+            else if (parent.localParams.normalOverlayIsText) parent.showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
             else parent.showOverlay(Constants.OverlayType.TYPE_NORMAL_ICON);
         } else {
-            if (parent.upperOverlayIsSettings) parent.showOverlay(Constants.OverlayType.TYPE_SETTINGS);
-            else parent.showOverlay(Constants.OverlayType.TYPE_ABOUT);
+            parent.showOverlay(Constants.OverlayType.TYPE_SETTINGS);
         }
     }
 }

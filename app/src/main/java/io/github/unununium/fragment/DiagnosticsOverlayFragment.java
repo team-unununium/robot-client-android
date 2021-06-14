@@ -76,7 +76,7 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
         // Inflate the layout for this fragment
         View returnView = inflater.inflate(R.layout.fragment_diagnostics_overlay, container, false);
         setViewListeners(returnView);
-        setOperatorViewsVisibility(returnView, parentActivity.params.isOperator());
+        setOperatorViewsVisibility(returnView, parentActivity.remoteParams.isOperator());
         return returnView;
     }
 }
