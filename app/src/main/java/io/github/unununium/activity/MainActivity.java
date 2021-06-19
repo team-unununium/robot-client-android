@@ -40,6 +40,7 @@ import io.github.unununium.comm.ServerConnection;
 import io.github.unununium.fragment.DiagnosticsOverlayFragment;
 import io.github.unununium.fragment.NormalOverlayFragment;
 import io.github.unununium.fragment.SettingsOverlayFragment;
+import io.github.unununium.util.CameraSurfaceView;
 import io.github.unununium.util.Constants;
 import io.github.unununium.util.FragmentOnBackPressed;
 import io.github.unununium.util.GeneralFunctions;
@@ -55,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     public ConnectionParameters remoteParams = new ConnectionParameters();
     public LocalParameters localParams = new LocalParameters();
     public ServerConnection serverConnection = null;
-
     private boolean doubleBackToExitPressedOnce = false;
 
     /** Creates the view and sets up the options for the view. **/
@@ -64,10 +64,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        localParams = GeneralFunctions.restoreLocalParameters(MainActivity.this);
         inputHandler = new InputHandler(MainActivity.this);
-        valueHandler = new ValueHandler(MainActivity.this, remoteParams);
-        serverConnection = new ServerConnection(MainActivity.this, valueHandler);
+        valueHandler = new ValueHandler(MainActivity.this);
         showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
     }
 
@@ -75,26 +73,26 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopCall();
-        GeneralFunctions.storeLocalParameters(MainActivity.this, localParams);
+        if (serverConnection != null) serverConnection.pauseConnection();
     }
 
     /** Resumes the live stream. **/
     @Override
     protected void onResume() {
         super.onResume();
+        if (serverConnection == null) {
+            serverConnection = new ServerConnection(MainActivity.this);
+            serverConnection.createConnection();
+        } else {
+            serverConnection.resumeConnection();
+        }
         setImmersiveSticky();
-        joinCall();
     }
 
-    /** Resumes the stream on the player. **/
-    private void joinCall() {
-        // TODO: Complete
-    }
-
-    /** Stops the video call. **/
-    private void stopCall() {
-        // TODO: Complete
+    @Override
+    protected void onStop() {
+        super.onStop();
+        serverConnection.terminateConnection();
     }
 
     /** Set the top bar of the screen to be hidden. **/
@@ -116,7 +114,6 @@ public class MainActivity extends AppCompatActivity {
                 ((FragmentOnBackPressed) currentFragment).onBackPressed()) {
             // Press back to exit
             if (doubleBackToExitPressedOnce) {
-                stopCall();
                 GeneralFunctions.exitApp(MainActivity.this);
             } else {
                 this.doubleBackToExitPressedOnce = true;
@@ -130,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         return super.onGenericMotionEvent(event);
-        // TODO: Complete
+        // TODO: Handle controller motion
     }
 
     /** Delegates the inputs by the controller to the input handler. **/

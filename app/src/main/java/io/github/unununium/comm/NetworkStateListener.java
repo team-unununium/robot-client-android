@@ -43,6 +43,5 @@ public class NetworkStateListener extends BroadcastReceiver {
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = conn.getActiveNetworkInfo();
         connection.onNetworkStateChanged(networkInfo != null && networkInfo.isConnected());
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

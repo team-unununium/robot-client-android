@@ -267,4 +267,14 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_y"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_y" />
+
+    <TextView
+        android:id="@+id/overlay_diag_velocity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/_1"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_z"
+        app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_z" />
 </androidx.constraintlayout.widget.ConstraintLayout>

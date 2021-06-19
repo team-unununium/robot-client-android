@@ -18,7 +18,11 @@
 
 package io.github.unununium.comm;
 
+import android.graphics.Bitmap;
+
 import java.text.DecimalFormat;
+
+import io.github.unununium.util.Constants;
 
 /** The parameters that are currently being used in the app for local updates. **/
 public class LocalParameters {
@@ -56,5 +60,19 @@ public class LocalParameters {
     public int getControlModeInt() {
         return phoneControlMode == LocalParameters.ControlMode.DISABLED ? 0
                 : phoneControlMode == LocalParameters.ControlMode.CAMERA ? 1 : 2;
+    }
+
+    public Constants.OverlayType getCurrentOverlay() {
+        if (!uiIsHidden) {
+            if (upperOverlayIsHidden) {
+                if (diagnosticsModeEnabled) return Constants.OverlayType.TYPE_DIAGNOSTICS;
+                else if (normalOverlayIsText) return Constants.OverlayType.TYPE_NORMAL_TEXT;
+                else return Constants.OverlayType.TYPE_NORMAL_ICON;
+            } else {
+                return Constants.OverlayType.TYPE_SETTINGS;
+            }
+        } else {
+            return Constants.OverlayType.TYPE_NONE;
+        }
     }
 }

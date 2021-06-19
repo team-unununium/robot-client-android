@@ -20,6 +20,8 @@ package io.github.unununium.comm;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
@@ -44,28 +46,27 @@ import java.util.HashMap;
 
 import io.github.unununium.BuildConfig;
 import io.github.unununium.R;
-import io.github.unununium.util.ValueHandler;
+import io.github.unununium.activity.MainActivity;
+import io.github.unununium.util.CameraSurfaceView;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
 /** The Socket.IO connection between the server and the phone. **/
 public class ServerConnection {
-    private final Context context;
-    private ValueHandler valueHandler;
+    private MainActivity parent;
     private String accessToken = null;
-    private ConnectionParameters params;
     private Socket socket = null;
     private NetworkStateListener listener;
     private final DecimalFormat fourDP = new DecimalFormat("0.0000");
 
     private final Emitter.Listener onSessionInfoReceived = args -> {
         parseData((JSONObject) args[0]);
-        valueHandler.onDataReceived();
+        parent.valueHandler.onDataReceived();
     };
 
     private final Emitter.Listener onTestClientReceived = args -> {
-        if (params.isOperator) {
+        if (parent.remoteParams.isOperator) {
             onConnectionFailure("testClient event received for operator");
         } else {
             setState(ConnectionParameters.State.CONNECTED);
@@ -73,39 +74,46 @@ public class ServerConnection {
     };
 
     private final Emitter.Listener onTestOperatorReceived = args -> {
-        if (params.isOperator) {
+        if (parent.remoteParams.isOperator) {
             setState(ConnectionParameters.State.CONNECTED);
         } else {
             onConnectionFailure("testOperator received for client");
         }
     };
 
-    public ServerConnection(Context context, ValueHandler handler) {
-        this.context = context;
-        this.params = new ConnectionParameters();
-        this.valueHandler = handler;
+    private final Emitter.Listener onVideoBufferReceived = args -> {
+        byte[] videoBuffer = (byte[]) args[0];
+        Log.d("DEBUGTEST", "VideoBuffer Length: " + videoBuffer.length);
+        Bitmap outputBitmap = BitmapFactory.decodeByteArray(videoBuffer, 0, videoBuffer.length);
+        parent.runOnUiThread(() ->
+                ((CameraSurfaceView) parent.findViewById(R.id.m1_playerview)).targetBitmap = outputBitmap);
+    };
+
+    public ServerConnection(MainActivity parent) {
+        this.parent = parent;
         if (isOnline()) setState(ConnectionParameters.State.DISCONNECTED);
         else setState(ConnectionParameters.State.NETWORK_NOT_AVAILABLE);
     }
 
     public void createConnection() {
-        if (params.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
-            Toast.makeText(context, params.getStateString(), Toast.LENGTH_SHORT).show();
+        if (parent.remoteParams.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
+            Toast.makeText(parent, parent.remoteParams.getStateString(), Toast.LENGTH_SHORT).show();
             return;
         }
         // Attempt to get a access token
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(parent);
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("guid", params.guid);
-            requestBody.put("secret", params.isOperator ?
+            requestBody.put("guid", parent.remoteParams.guid);
+            requestBody.put("secret", parent.remoteParams.isOperator ?
                     BuildConfig.SERVER_OPERATOR_SECRET : BuildConfig.SERVER_CLIENT_SECRET);
             String requestString = requestBody.toString();
             JsonObjectRequest accessRequest = getAccessRequest(requestString);
             queue.add(accessRequest);
+            setState(ConnectionParameters.State.ACQUIRING_TOKEN);
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.error_network, Toast.LENGTH_SHORT).show();
+            Toast.makeText(parent, R.string.error_network, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -118,9 +126,10 @@ public class ServerConnection {
                 accessToken = response.getString("token");
                 IO.Options options = new IO.Options();
                 options.extraHeaders = new HashMap<>();
-                options.extraHeaders.put("guid", Collections.singletonList(params.guid));
+                options.extraHeaders.put("guid", Collections.singletonList(parent.remoteParams.guid));
                 options.extraHeaders.put("token", Collections.singletonList(accessToken));
                 socket = IO.socket(BuildConfig.SERVER_URL, options);
+                setState(ConnectionParameters.State.SOCKET_DISCONNECTED);
                 resumeConnection();
             } catch (JSONException | URISyntaxException e) {
                 onConnectionFailure(e.getMessage());
@@ -139,46 +148,48 @@ public class ServerConnection {
     }
 
     public void resumeConnection() {
-        if (socket != null && socket.isActive() && !socket.connected()) {
-            socket.on("robotSendSessionInfo", onSessionInfoReceived);
+        if (socket != null && !socket.connected()) {
+            setState(ConnectionParameters.State.STARTING_SOCKET);
+            socket.on("clientUpdateData", onSessionInfoReceived);
             socket.on("testClient", onTestClientReceived);
             socket.on("testOperator", onTestOperatorReceived);
+            socket.on("clientSendVideo", onVideoBufferReceived);
             socket.connect();
-            setState(ConnectionParameters.State.STARTING_SOCKET);
         }
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
         listener = new NetworkStateListener(this);
-        context.registerReceiver(listener, filter);
+        parent.registerReceiver(listener, filter);
     }
 
     public void pauseConnection() {
         if (socket != null && socket.isActive() && socket.connected()) {
             socket.disconnect();
-            socket.off("robotSendSessionInfo", onSessionInfoReceived);
+            socket.off("clientUpdateData", onSessionInfoReceived);
             socket.off("testClient", onTestClientReceived);
             socket.off("testOperator", onTestOperatorReceived);
+            socket.off("clientSendVideo", onVideoBufferReceived);
             setState(ConnectionParameters.State.SOCKET_DISCONNECTED);
         }
-        if (listener != null) context.unregisterReceiver(listener);
+        if (listener != null) parent.unregisterReceiver(listener);
     }
 
     public void terminateConnection() {
-        if (params.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
-            Toast.makeText(context, params.getStateString(), Toast.LENGTH_SHORT).show();
+        if (parent.remoteParams.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
+            Toast.makeText(parent, parent.remoteParams.getStateString(), Toast.LENGTH_SHORT).show();
             return;
         }
         pauseConnection();
-        RequestQueue queue = Volley.newRequestQueue(context);
+        RequestQueue queue = Volley.newRequestQueue(parent);
         JSONObject requestBody = new JSONObject();
         try {
-            requestBody.put("guid", params.guid);
+            requestBody.put("guid", parent.remoteParams.guid);
             requestBody.put("token", accessToken);
             String requestString = requestBody.toString();
             StringRequest deleteRequest = getDeleteRequest(requestString);
             queue.add(deleteRequest);
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(context, R.string.error_network, Toast.LENGTH_SHORT).show();
+            Toast.makeText(parent, R.string.error_network, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -214,22 +225,22 @@ public class ServerConnection {
         else setState(ConnectionParameters.State.NETWORK_NOT_AVAILABLE);
 
         // Try without operator
-        if (params.isOperator) {
+        if (parent.remoteParams.isOperator) {
             setOperator(false);
-            Toast.makeText(context, R.string.revert_from_operator, Toast.LENGTH_SHORT).show();
+            Toast.makeText(parent, R.string.revert_from_operator, Toast.LENGTH_SHORT).show();
             createConnection();
         }
     }
 
     public void onNetworkStateChanged(boolean isConnected) {
-        if (isConnected && params.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
+        if (isConnected && parent.remoteParams.state == ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
             setState(ConnectionParameters.State.DISCONNECTED);
             createConnection();
-        } else if (!isConnected && params.state != ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
-            if (params.state != ConnectionParameters.State.DISCONNECTED) {
+        } else if (!isConnected && parent.remoteParams.state != ConnectionParameters.State.NETWORK_NOT_AVAILABLE) {
+            if (parent.remoteParams.state != ConnectionParameters.State.DISCONNECTED) {
                 socket = null;
                 accessToken = null;
-                Toast.makeText(context, R.string.error_network, Toast.LENGTH_SHORT).show();
+                Toast.makeText(parent, R.string.error_network, Toast.LENGTH_SHORT).show();
             }
             setState(ConnectionParameters.State.NETWORK_NOT_AVAILABLE);
         }
@@ -239,42 +250,42 @@ public class ServerConnection {
     public void parseData(@NotNull JSONObject object) {
         // Individual try statements allow for incomplete objects to be parsed
         try {
-            params.temperature = object.getDouble("temp");
+            parent.remoteParams.temperature = object.getDouble("temp");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.humidity = object.getDouble("humidity");
+            parent.remoteParams.humidity = object.getDouble("humidity");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.frontObstacle = object.getDouble("frontObstacle");
+            parent.remoteParams.frontObstacle = object.getDouble("frontObstacle");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.backObstacle = object.getDouble("backObstacle");
+            parent.remoteParams.backObstacle = object.getDouble("backObstacle");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.co = object.getDouble("co");
+            parent.remoteParams.co = object.getDouble("co");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.ch4 = object.getDouble("ch4");
+            parent.remoteParams.ch4 = object.getDouble("ch4");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.h2 = object.getDouble("h2");
+            parent.remoteParams.h2 = object.getDouble("h2");
         } catch (JSONException e) {
             e.printStackTrace();
         }
         try {
-            params.lpg = object.getDouble("lpg");
+            parent.remoteParams.lpg = object.getDouble("lpg");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -282,7 +293,7 @@ public class ServerConnection {
 
     private boolean isOnline() {
         ConnectivityManager connMgr = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                parent.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isConnected());
     }
@@ -290,19 +301,19 @@ public class ServerConnection {
     //****** Start of setters ******
 
     private void setState(ConnectionParameters.State state) {
-        params.state = state;
-        valueHandler.onStateChanged();
+        parent.remoteParams.state = state;
+        parent.valueHandler.onStateChanged();
     }
 
     public void setOperator(boolean isOperator) {
-        params.isOperator = isOperator;
+        parent.remoteParams.isOperator = isOperator;
         terminateConnection();
         createConnection();
-        valueHandler.onOperatorChanged();
+        parent.valueHandler.onOperatorChanged();
     }
 
     public void setVelocity(int velocity) {
-        params.velocity = velocity;
+        parent.remoteParams.velocity = velocity;
         JSONObject obj = new JSONObject();
         try {
             obj.put("velocity", velocity);
@@ -310,11 +321,11 @@ public class ServerConnection {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        valueHandler.onVelocityChanged();
+        parent.valueHandler.onVelocityChanged();
     }
 
     public void setMoving(boolean moving) {
-        params.isMoving = moving;
+        parent.remoteParams.isMoving = moving;
         if (socket != null) {
             if (moving) {
                 socket.emit("startMoving");
@@ -322,11 +333,11 @@ public class ServerConnection {
                 socket.emit("stopMoving");
             }
         }
-        valueHandler.onMovementChanged();
+        parent.valueHandler.onMovementChanged();
     }
 
     public void setCameraRotation(float cameraRotation) {
-        params.cameraRotation = cameraRotation;
+        parent.remoteParams.cameraRotation = cameraRotation;
         // Trim to 4dp, converted to String before sending over
         String rotationString = fourDP.format(cameraRotation);
         JSONObject obj = new JSONObject();
@@ -336,11 +347,11 @@ public class ServerConnection {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        valueHandler.onCameraRotationChanged();
+        parent.valueHandler.onCameraRotationChanged();
     }
 
     public void setRobotRotation(float robotRotation) {
-        params.robotRotation = robotRotation;
+        parent.remoteParams.robotRotation = robotRotation;
         // Trim to 4dp, converted to String before sending over
         String rotationString = fourDP.format(robotRotation);
         JSONObject obj = new JSONObject();
@@ -350,6 +361,6 @@ public class ServerConnection {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        valueHandler.onRotationChanged();
+        parent.valueHandler.onRotationChanged();
     }
 }

@@ -19,9 +19,8 @@
 package io.github.unununium.util;
 
 import android.graphics.Bitmap;
-import android.view.View;
+import android.view.SurfaceView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,15 +43,7 @@ public class InputHandler {
     /** When a screenshot command is received. Takes a "screenshot" of the FrameLayout and saves it
      * as a bitmap image. **/
     public void onScreenshot() {
-        // TODO: Update code for VideoView
-        VideoView layout = parent.findViewById(R.id.m1_playerview);
-        layout.setDrawingCacheEnabled(true);
-        // https://stackoverflow.com/a/4618030/8141824
-        layout.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
-                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        layout.layout(0, 0, layout.getMeasuredWidth(), layout.getMeasuredHeight());
-        layout.buildDrawingCache(true);
-        Bitmap bitmap = layout.getDrawingCache();
+        CameraSurfaceView outputView = parent.findViewById(R.id.m1_playerview);
         Date currentDate = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.ENGLISH);
         String filePath = String.format("%s%s",
@@ -61,9 +52,13 @@ public class InputHandler {
                 .generateValidFile(filePath, ".png");
         // Writes the bitmap to the file, checks whether the path is valid in the process
         try (FileOutputStream out = new FileOutputStream(generatedFilePath)) {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
-                    Toast.LENGTH_LONG).show();
+            if (outputView.targetBitmap != null) {
+                outputView.targetBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(parent, "No footage available", Toast.LENGTH_SHORT).show();
+            }
         } catch (NullPointerException | IOException e) {
             Toast.makeText(parent, e.getMessage(), Toast.LENGTH_SHORT).show();
             e.printStackTrace();

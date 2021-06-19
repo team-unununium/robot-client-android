@@ -104,4 +104,6 @@
     <!-- Errors -->
     <string name="revert_from_operator">Reverting to non-operator status…</string>
     <string name="error_network">Network error</string>
+    <string name="_1">1</string>
+    <string name="velocity_stopped">Velocity: Stopped</string>
 </resources>

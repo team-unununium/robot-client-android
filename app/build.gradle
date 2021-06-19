@@ -109,9 +109,6 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
-    implementation ('org.jitsi:ice4j:3.0-31-g924f40c') {
-        exclude group: 'org.jetbrains.kotlin', module: 'kotlin-osgi-bundle'
-    }
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

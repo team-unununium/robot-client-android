@@ -105,7 +105,7 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
     }
 
     public void onOperatorDonePressed() {
-        // TODO: Complete
+        // TODO: Once operator is done
     }
 
     private boolean switchPrefValueChanged(String key, boolean compare) {
@@ -135,6 +135,8 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
 
     private void customizePreferenceValues() {
         if (parentActivity.remoteParams.isOperator()) customizeOperatorValues();
+        ((SwitchPreference) Objects.requireNonNull(findPreference("pref_controller_mode")))
+                .setChecked(parentActivity.remoteParams.isOperator());
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_toggle_ui_visibility")))
                 .setChecked(!parentActivity.localParams.uiIsHidden);
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_invert_ui_colour")))
