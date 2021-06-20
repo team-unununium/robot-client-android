@@ -18,8 +18,6 @@
 
 package io.github.unununium.comm;
 
-import android.graphics.Bitmap;
-
 import java.text.DecimalFormat;
 
 import io.github.unununium.util.Constants;

@@ -19,8 +19,10 @@
 package io.github.unununium.util;
 
 import android.graphics.Bitmap;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.widget.Toast;
+
+import com.google.android.exoplayer2.ui.PlayerView;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -43,7 +45,7 @@ public class InputHandler {
     /** When a screenshot command is received. Takes a "screenshot" of the FrameLayout and saves it
      * as a bitmap image. **/
     public void onScreenshot() {
-        CameraSurfaceView outputView = parent.findViewById(R.id.m1_playerview);
+        PlayerView outputView = parent.findViewById(R.id.m1_playerview);
         Date currentDate = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_hhmmss", Locale.ENGLISH);
         String filePath = String.format("%s%s",
@@ -52,8 +54,14 @@ public class InputHandler {
                 .generateValidFile(filePath, ".png");
         // Writes the bitmap to the file, checks whether the path is valid in the process
         try (FileOutputStream out = new FileOutputStream(generatedFilePath)) {
-            if (outputView.targetBitmap != null) {
-                outputView.targetBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            if (outputView.getVideoSurfaceView() != null) {
+                Bitmap outputBitmap;
+                if (outputView.getVideoSurfaceView() instanceof TextureView) {
+                    outputBitmap = ((TextureView) outputView.getVideoSurfaceView()).getBitmap();
+                } else {
+                    outputBitmap = outputView.getVideoSurfaceView().getDrawingCache();
+                }
+                outputBitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
                 Toast.makeText(parent, String.format("%s%s", "File saved to ", generatedFilePath),
                         Toast.LENGTH_LONG).show();
             } else {

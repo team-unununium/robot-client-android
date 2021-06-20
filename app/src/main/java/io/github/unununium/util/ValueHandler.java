@@ -31,6 +31,7 @@ import java.util.Locale;
 
 import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
+import io.github.unununium.comm.ConnectionParameters;
 import io.github.unununium.fragment.OverlayFragment;
 
 /** An extension to MainActivity that handles changes in values in connection parameters. **/
@@ -58,11 +59,44 @@ public class ValueHandler {
         });
     }
 
+    public void onStreamInfoReceived() {
+        parent.runOnUiThread(() -> {
+            // TODO: Handle stream info receiving
+            switch (parent.localParams.getCurrentOverlay()) {
+                case TYPE_DIAGNOSTICS:
+                    break;
+                case TYPE_NORMAL_ICON:
+                    break;
+                case TYPE_NORMAL_TEXT:
+                    break;
+                case TYPE_SETTINGS:
+                case TYPE_NONE:
+                    break;
+            }
+        });
+    }
+
     public void onStateChanged() {
         parent.runOnUiThread(() -> {
-            if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS) {
-                ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_server)).setText(
-                        String.format("Server: %s", parent.getString(parent.remoteParams.getStateString())));
+            ConnectionParameters.State currentState = parent.remoteParams.getState();
+            ImageView targetView;
+            switch (parent.localParams.getCurrentOverlay()) {
+                case TYPE_DIAGNOSTICS:
+                    ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_server)).setText(
+                            String.format("Server: %s", parent.getString(parent.remoteParams.getStateString())));
+                    break;
+                case TYPE_NORMAL_ICON:
+                    targetView = parent.currentFragment.requireView().findViewById(R.id.overlay_icon_disconnected);
+                    targetView.setVisibility(currentState == ConnectionParameters.State.CONNECTED ? View.INVISIBLE : View.GONE);
+                    if (currentState != ConnectionParameters.State.CONNECTED) blinkImage(targetView);
+                    break;
+                case TYPE_NORMAL_TEXT:
+                    targetView = parent.currentFragment.requireView().findViewById(R.id.overlay_text_disconnected);
+                    targetView.setVisibility(currentState == ConnectionParameters.State.CONNECTED ? View.INVISIBLE : View.GONE);
+                    if (currentState != ConnectionParameters.State.CONNECTED) blinkImage(targetView);
+                    break;
+                default:
+                    break;
             }
         });
     }
@@ -71,15 +105,15 @@ public class ValueHandler {
         parent.runOnUiThread(() -> {
             switch (parent.localParams.getCurrentOverlay()) {
                 case TYPE_DIAGNOSTICS:
-                    ((TextView) parent.findViewById(R.id.overlay_diag_app_mode)).setText(
+                    ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_app_mode)).setText(
                             String.format("Mode: %s", parent.remoteParams.isOperator() ? "Operator" : "Observer"));
                     ((OverlayFragment) parent.currentFragment).setOperatorViewsVisibility(null, parent.remoteParams.isOperator());
                     break;
                 case TYPE_NORMAL_ICON:
-                    parent.findViewById(R.id.overlay_icon_moving).setVisibility(parent.remoteParams.isOperator() ? View.VISIBLE : View.INVISIBLE);
+                    parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving).setVisibility(parent.remoteParams.isOperator() ? View.VISIBLE : View.INVISIBLE);
                     break;
                 case TYPE_NORMAL_TEXT:
-                    parent.findViewById(R.id.overlay_text_moving).setVisibility(parent.remoteParams.isOperator() ? View.VISIBLE : View.INVISIBLE);
+                    parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving).setVisibility(parent.remoteParams.isOperator() ? View.VISIBLE : View.INVISIBLE);
                     break;
                 case TYPE_SETTINGS:
                 case TYPE_NONE:
@@ -91,7 +125,7 @@ public class ValueHandler {
     public void onVelocityChanged() {
         parent.runOnUiThread(() -> {
             if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS && parent.remoteParams.isMoving()) {
-                ((TextView) parent.findViewById(R.id.overlay_diag_velocity)).setText(
+                ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_velocity)).setText(
                         String.format(Locale.ENGLISH, "Velocity: %d", parent.remoteParams.getVelocity()));
             }
         });
@@ -105,14 +139,16 @@ public class ValueHandler {
                             .findViewById(R.id.overlay_diag_velocity)).setText(R.string.velocity_stopped);
                     else onVelocityChanged();
                 case TYPE_NORMAL_ICON:
-                    parent.findViewById(R.id.overlay_icon_moving)
+                    parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving)
                             .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
-                    if (parent.remoteParams.isMoving()) blinkImage(parent.findViewById(R.id.overlay_icon_moving));
+                    if (parent.remoteParams.isMoving()) blinkImage(
+                            parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving));
                     break;
                 case TYPE_NORMAL_TEXT:
-                    parent.findViewById(R.id.overlay_text_moving)
+                    parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving)
                             .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
-                    if (parent.remoteParams.isMoving()) blinkImage(parent.findViewById(R.id.overlay_text_moving));
+                    if (parent.remoteParams.isMoving()) blinkImage(
+                            parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving));
                     break;
                 case TYPE_SETTINGS:
                 case TYPE_NONE:
@@ -139,8 +175,8 @@ public class ValueHandler {
     public void onCameraRotationChanged() {
         parent.runOnUiThread(() -> {
             if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS) {
-                ((TextView) parent.findViewById(R.id.overlay_diag_last_camera_rotation))
-                        .setText(String.format("Camera: %s", parent.localParams.twoDP.format(parent.remoteParams.getCameraRotation())));
+                ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_camera_x))
+                        .setText(parent.localParams.twoDP.format(parent.remoteParams.getCameraRotation()));
             }
         });
     }
@@ -148,8 +184,8 @@ public class ValueHandler {
     public void onRotationChanged() {
         parent.runOnUiThread(() -> {
             if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS) {
-                ((TextView) parent.findViewById(R.id.overlay_diag_last_robot_rotation))
-                        .setText(String.format("Robot: %s", parent.localParams.twoDP.format(parent.remoteParams.getRobotRotation())));
+                ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_robot_x))
+                        .setText(parent.localParams.twoDP.format(parent.remoteParams.getRobotRotation()));
             }
         });
     }

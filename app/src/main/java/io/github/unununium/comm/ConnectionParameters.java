@@ -45,7 +45,9 @@ public class ConnectionParameters {
     double ch4 = 0;
     double h2 = 0;
     double lpg = 0;
-
+    double bufferDuration = 0.4;
+    int videoWidth = 1280;
+    int videoHeight = 720;
     int velocity = 1;
     boolean isMoving = false;
     float cameraRotation = 0f;

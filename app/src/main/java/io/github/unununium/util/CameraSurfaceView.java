@@ -19,46 +19,31 @@
 package io.github.unununium.util;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.media.MediaCodec;
 import android.util.AttributeSet;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import java.io.IOException;
+
+import io.github.unununium.R;
 
 /** A custom SurfaceView to draw footage from the latest frame. **/
-public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
-    public Bitmap targetBitmap;
-    private Paint paint;
-    private boolean threadRunning = false;
+public class CameraSurfaceView extends SurfaceView {
+    private MediaCodec h264Decoder;
+
     private static final int FPS = 30;
+    private static final String VIDEO_MIME = "video/h264";
+
+    private boolean threadRunning = false;
     private final Thread updateThread = new Thread(){
         @SuppressWarnings("BusyWait")
         @Override
         public void run() {
             threadRunning = true;
             while (threadRunning) {
-                Canvas canvas = null;
-                SurfaceHolder holder = getHolder();
-                try {
-                    canvas = holder.lockCanvas();
-                    synchronized (getHolder()) {
-                        draw(canvas);
-                    }
-                } catch (Exception ignored) {
-
-                } finally {
-                    if (canvas != null) {
-                        try {
-                            holder.unlockCanvasAndPost(canvas);
-                        } catch (Exception ignored) {
-
-                        }
-                    }
-                }
+                // TODO: Update data
                 try {
                     sleep(1000 / FPS);
                 } catch (InterruptedException ignored) {
@@ -83,34 +68,27 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        updateThread.start();
+        try {
+            h264Decoder = MediaCodec.createDecoderByType(VIDEO_MIME);
+            updateThread.start();
+        } catch (IOException e) {
+            Toast.makeText(getContext(), R.string.error_h264_not_supported, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+
+    public void terminate() {
+        threadRunning = false;
+        updateThread.interrupt();
+    }
+
+    public void setVideo(byte[] video) {
+        // TODO: Set media format
+        h264Decoder.configure(null, getHolder().getSurface(), null, 0);
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-        canvas.drawColor(Color.BLACK);
-        if (paint == null) paint = new Paint();
-        if (targetBitmap != null) {
-            float scaling = getHeight() / (float) targetBitmap.getHeight();
-            canvas.drawBitmap(Bitmap.createScaledBitmap(targetBitmap,
-                    (int) Math.floor(targetBitmap.getWidth() * scaling), getHeight(), false),
-                    (getWidth() - (float) targetBitmap.getWidth() * scaling) / 2, 0, paint);
-        }
-    }
-
-    @Override
-    public void surfaceCreated(@NonNull SurfaceHolder holder) {
-
-    }
-
-    @Override
-    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
-
-    }
-
-    @Override
-    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
     }
 }

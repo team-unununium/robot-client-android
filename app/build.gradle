@@ -109,6 +109,7 @@ dependencies {
         // excluding org.json which is provided by Android
         exclude group: 'org.json', module: 'json'
     }
+    implementation 'com.google.android.exoplayer:exoplayer:2.14.1'
 
     testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'

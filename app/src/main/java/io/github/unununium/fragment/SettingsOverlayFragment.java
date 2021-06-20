@@ -73,6 +73,8 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
 
     public void onDonePressed() {
         if (parentActivity.remoteParams.isOperator()) onOperatorDonePressed();
+        if (switchPrefValueChanged("pref_controller_mode", parentActivity.remoteParams.isOperator()))
+            parentActivity.serverConnection.setOperator(!parentActivity.remoteParams.isOperator());
         if (switchPrefValueChanged("pref_toggle_ui_visibility", !parentActivity.localParams.uiIsHidden))
             parentActivity.localParams.uiIsHidden = !parentActivity.localParams.uiIsHidden;
         if (switchPrefValueChanged("pref_invert_ui_colour", !parentActivity.localParams.isDay))

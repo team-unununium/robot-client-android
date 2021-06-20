@@ -19,6 +19,11 @@
 package io.github.unununium.activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
@@ -57,6 +62,42 @@ public class MainActivity extends AppCompatActivity {
     public LocalParameters localParams = new LocalParameters();
     public ServerConnection serverConnection = null;
     private boolean doubleBackToExitPressedOnce = false;
+    private final float[] rotationVector = new float[4];
+
+    private static final float MAX_PHONE_ROTATION = 100; // Max possible rotation of phone on one side (in degrees)
+    private static final float MAX_PHONE_ROTATION_RADS = (float) (MAX_PHONE_ROTATION * Math.PI / 180);
+    private static final float MAX_ROBOT_ROTATION_RADS = (float) 0.8;
+    private static final float MAX_CAMERA_ROTATION_RADS = (float) 0.8;
+
+    private final SensorEventListener sensorListener = new SensorEventListener() {
+        @Override
+        public void onSensorChanged(@NotNull SensorEvent event) {
+            LocalParameters.ControlMode phoneControlMode = localParams.phoneControlMode;
+            // Source from Android tutorial
+            SensorManager.getQuaternionFromVector(rotationVector, event.values);
+            float yRotation = rotationVector[2];
+            if (yRotation < 0 && yRotation < (-1 * MAX_PHONE_ROTATION_RADS)) yRotation = (-1) * MAX_PHONE_ROTATION_RADS;
+            else if (yRotation > 0 && yRotation > MAX_PHONE_ROTATION_RADS) yRotation = MAX_PHONE_ROTATION_RADS;
+            float actualSensorChange;
+            switch (phoneControlMode) {
+                case ROBOT:
+                    actualSensorChange = (yRotation / MAX_PHONE_ROTATION_RADS) * MAX_ROBOT_ROTATION_RADS;
+                    serverConnection.setRobotRotation(actualSensorChange);
+                    break;
+                case CAMERA:
+                    actualSensorChange = (yRotation / MAX_CAMERA_ROTATION_RADS) * MAX_ROBOT_ROTATION_RADS;
+                    serverConnection.setCameraRotation(actualSensorChange);
+                    break;
+                case DISABLED:
+                    break;
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
 
     /** Creates the view and sets up the options for the view. **/
     @SuppressLint("ClickableViewAccessibility")
@@ -64,9 +105,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        manager.registerListener(sensorListener, sensor, SensorManager.SENSOR_DELAY_GAME);
         inputHandler = new InputHandler(MainActivity.this);
         valueHandler = new ValueHandler(MainActivity.this);
         showOverlay(Constants.OverlayType.TYPE_NORMAL_TEXT);
+    }
+
+    public void registerSensor() {
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        Sensor sensor = manager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+        manager.registerListener(sensorListener, sensor, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    public void unregisterSensor() {
+        SensorManager manager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        manager.unregisterListener(sensorListener);
     }
 
     /** Pauses the live stream. **/
@@ -74,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         if (serverConnection != null) serverConnection.pauseConnection();
+        if (remoteParams.isOperator()) unregisterSensor();
     }
 
     /** Resumes the live stream. **/
@@ -86,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             serverConnection.resumeConnection();
         }
+        if (remoteParams.isOperator()) registerSensor();
         setImmersiveSticky();
     }
 
@@ -93,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         serverConnection.terminateConnection();
+        ((CameraSurfaceView) findViewById(R.id.m1_playerview)).terminate();
     }
 
     /** Set the top bar of the screen to be hidden. **/
@@ -126,8 +184,14 @@ public class MainActivity extends AppCompatActivity {
     /** Delegates the movements of the controller to the input handler. **/
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
-        return super.onGenericMotionEvent(event);
-        // TODO: Handle controller motion
+        super.onGenericMotionEvent(event);
+        if (localParams.externalControllerEnabled &&
+                GeneralFunctions.deviceIsController(event.getDevice()) && remoteParams.isOperator()) {
+            // TODO: Handle controller motion
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /** Delegates the inputs by the controller to the input handler. **/
