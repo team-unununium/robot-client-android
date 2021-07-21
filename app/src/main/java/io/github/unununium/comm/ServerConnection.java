@@ -25,6 +25,7 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -41,6 +42,9 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 import io.github.unununium.BuildConfig;
 import io.github.unununium.R;
@@ -102,6 +106,8 @@ public class ServerConnection {
             Toast.makeText(parent, parent.remoteParams.getStateString(), Toast.LENGTH_SHORT).show();
             return;
         }
+
+        parent.remoteParams.guid = UUID.randomUUID().toString();
         // Attempt to get a access token
         RequestQueue queue = Volley.newRequestQueue(parent);
         JSONObject requestBody = new JSONObject();
@@ -176,7 +182,11 @@ public class ServerConnection {
             socket.off("clientRequestInfo", onStreamInfoReceived);
             setState(ConnectionParameters.State.SOCKET_DISCONNECTED);
         }
-        if (listener != null) parent.unregisterReceiver(listener);
+        try {
+            if (listener != null) parent.unregisterReceiver(listener);
+        } catch (IllegalArgumentException e) {
+            listener = null;
+        }
     }
 
     public void terminateConnection() {
@@ -186,41 +196,40 @@ public class ServerConnection {
         }
         pauseConnection();
         RequestQueue queue = Volley.newRequestQueue(parent);
-        JSONObject requestBody = new JSONObject();
-        try {
-            requestBody.put("guid", parent.remoteParams.guid);
-            requestBody.put("token", accessToken);
-            String requestString = requestBody.toString();
-            StringRequest deleteRequest = getDeleteRequest(requestString);
-            queue.add(deleteRequest);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(parent, R.string.error_network, Toast.LENGTH_SHORT).show();
-        }
+        StringRequest deleteRequest = getDeleteRequest(parent.remoteParams.guid, accessToken);
+        queue.add(deleteRequest);
     }
 
     @NotNull
-    private StringRequest getDeleteRequest(String requestString) {
+    private StringRequest getDeleteRequest(String guid, String accessToken) {
         String accessUrl = BuildConfig.SERVER_URL + "/access";
         return new StringRequest(Request.Method.DELETE, accessUrl, response -> {
-            // THIS IS NOT SUPPOSED TO HAPPEN
-            // EVERYONE PANIC
-            onConnectionFailure("Response " + response + " received from server despite 204 expected");
+            if (Objects.equals(response, "")) {
+                setState(ConnectionParameters.State.DISCONNECTING);
+            } else {
+                onConnectionFailure("Response " + response + " received from server despite 204 expected");
+            }
         }, error -> {
-            if (error.networkResponse.statusCode == 204) {
+            if (error.networkResponse.statusCode == 204 || error.networkResponse.statusCode == 404) {
                 setState(ConnectionParameters.State.DISCONNECTING);
             } else {
                 onConnectionFailure(error.getMessage());
             }
         }) {
             @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                // https://stackoverflow.com/questions/22803766/volley-how-to-send-delete-request-parameters
+                // DELETE never sends body in Volley, so headers had to be used instead
+                Map<String, String> headers = super.getHeaders();
 
-            @Override
-            public byte[] getBody() {
-                return requestString == null ? null : requestString.getBytes(StandardCharsets.UTF_8);
+                if (headers == null || headers.equals(Collections.emptyMap())) {
+                    headers = new HashMap<>();
+                }
+
+                headers.put("guid", guid);
+                headers.put("token", accessToken);
+
+                return headers;
             }
         };
     }

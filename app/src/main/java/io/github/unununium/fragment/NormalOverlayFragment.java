@@ -31,6 +31,10 @@ import io.github.unununium.activity.MainActivity;
 public class NormalOverlayFragment extends OverlayFragment {
     private final boolean isText;
 
+    public NormalOverlayFragment() {
+        isText = false;
+    }
+
     public NormalOverlayFragment(MainActivity parentActivity, boolean isText, boolean initIsDay) {
         super(parentActivity, initIsDay);
         this.isText = isText;

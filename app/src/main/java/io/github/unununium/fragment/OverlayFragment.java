@@ -41,6 +41,10 @@ public abstract class OverlayFragment extends Fragment {
     protected int[] nightImageResList = new int[]{};
     protected int[] operatorOnlyList = new int[]{};
 
+    public OverlayFragment() {
+        initIsDay = true;
+    }
+
     public OverlayFragment(MainActivity parentActivity, boolean initIsDay) {
         this.parentActivity = parentActivity;
         this.initIsDay = initIsDay;

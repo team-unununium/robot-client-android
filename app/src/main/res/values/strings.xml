@@ -104,8 +104,8 @@
     <!-- Errors -->
     <string name="revert_from_operator">Reverting to non-operator status…</string>
     <string name="error_network">Network error</string>
-    <string name="error_h264_not_supported">H264 codec is not supported on this device</string>
     <string name="_1">1</string>
     <string name="velocity_stopped">Velocity: Stopped</string>
     <string name="fps">FPS:</string>
+    <string name="error_buffer_parse">Error in parsing video buffer</string>
 </resources>

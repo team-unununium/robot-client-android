@@ -93,7 +93,7 @@
             android:title="@string/pref_lower_humidity_bound" />
         <EditTextPreference
             android:defaultValue="0.88"
-            android:key="@string/pref_upper_humidity_bound"
+            android:key="pref_upper_humidity_bound"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="@string/pref_upper_humidity_bound" />

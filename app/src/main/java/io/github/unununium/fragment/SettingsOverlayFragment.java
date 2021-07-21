@@ -42,12 +42,17 @@ import java.util.Objects;
 
 import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
+import io.github.unununium.comm.LocalParameters;
 import io.github.unununium.util.FragmentOnBackPressed;
 
 public class SettingsOverlayFragment extends PreferenceFragmentCompat implements FragmentOnBackPressed,
         PreferenceManager.OnPreferenceTreeClickListener {
     private final MainActivity parentActivity;
     private static final String VALID_FLOAT = "^[0-9]+(\\.[0-9]+)*$";
+
+    public SettingsOverlayFragment() {
+        parentActivity = null;
+    }
 
     public SettingsOverlayFragment(MainActivity parentActivity) {
         super();
@@ -64,15 +69,16 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View targetView = super.onCreateView(inflater, container, savedInstanceState);
         if (targetView != null) {
-            targetView.setOnClickListener((v) -> parentActivity.inputHandler.onToggleUpperOverlay());
-            targetView.findViewById(R.id.so_cancel).setOnClickListener((v) -> parentActivity.inputHandler.onToggleUpperOverlay());
+            targetView.setOnClickListener((v) -> Objects.requireNonNull(parentActivity).inputHandler.onToggleUpperOverlay());
+            targetView.findViewById(R.id.so_cancel).setOnClickListener((v) -> Objects.requireNonNull(parentActivity).inputHandler.onToggleUpperOverlay());
             targetView.findViewById(R.id.so_done).setOnClickListener((v) -> onDonePressed());
         }
         return targetView;
     }
 
     public void onDonePressed() {
-        if (parentActivity.remoteParams.isOperator()) onOperatorDonePressed();
+        if (Objects.requireNonNull(parentActivity).remoteParams.isOperator() && ((SwitchPreference)
+                Objects.requireNonNull(findPreference("pref_controller_mode"))).isChecked()) onOperatorDonePressed();
         if (switchPrefValueChanged("pref_controller_mode", parentActivity.remoteParams.isOperator()))
             parentActivity.serverConnection.setOperator(!parentActivity.remoteParams.isOperator());
         if (switchPrefValueChanged("pref_toggle_ui_visibility", !parentActivity.localParams.uiIsHidden))
@@ -107,7 +113,17 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
     }
 
     public void onOperatorDonePressed() {
-        // TODO: Once operator is done
+        ListPreference phoneControlMode = findPreference("pref_phone_controls");
+        int currentValue = Integer.parseInt(Objects.requireNonNull(phoneControlMode).getValue());
+        Objects.requireNonNull(parentActivity).localParams.phoneControlMode = currentValue == 0 ?
+                LocalParameters.ControlMode.DISABLED : currentValue == 1 ?
+                LocalParameters.ControlMode.CAMERA : LocalParameters.ControlMode.ROBOT;
+        SwitchPreference externalControllerPref = findPreference("pref_enable_external_controller");
+        parentActivity.localParams.externalControllerEnabled =
+                Objects.requireNonNull(externalControllerPref).isChecked();
+        SwitchPreference startMovingPref = findPreference("pref_start_moving");
+        parentActivity.serverConnection.setMoving(Objects.requireNonNull(startMovingPref).isChecked());
+        // TODO: Night mode
     }
 
     private boolean switchPrefValueChanged(String key, boolean compare) {
@@ -128,7 +144,7 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
-        if (parentActivity.remoteParams.isOperator()) setPreferencesFromResource(R.xml.settings_operator, rootKey);
+        if (Objects.requireNonNull(parentActivity).remoteParams.isOperator()) setPreferencesFromResource(R.xml.settings_operator, rootKey);
         else setPreferencesFromResource(R.xml.settings_observer, rootKey);
         PreferenceManager pManager = getPreferenceManager();
         pManager.setOnPreferenceTreeClickListener(SettingsOverlayFragment.this);
@@ -136,7 +152,7 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
     }
 
     private void customizePreferenceValues() {
-        if (parentActivity.remoteParams.isOperator()) customizeOperatorValues();
+        if (Objects.requireNonNull(parentActivity).remoteParams.isOperator()) customizeOperatorValues();
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_controller_mode")))
                 .setChecked(parentActivity.remoteParams.isOperator());
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_toggle_ui_visibility")))
@@ -175,7 +191,7 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
 
     private void customizeOperatorValues() {
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_enable_external_controller")))
-                .setChecked(parentActivity.localParams.externalControllerEnabled);
+                .setChecked(Objects.requireNonNull(parentActivity).localParams.externalControllerEnabled);
         ((ListPreference) Objects.requireNonNull(findPreference("pref_phone_controls")))
                 .setValueIndex(parentActivity.localParams.getControlModeInt());
         ((SwitchPreference) Objects.requireNonNull(findPreference("pref_start_moving")))
@@ -198,7 +214,7 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
 
     @Override
     public boolean onBackPressed() {
-        parentActivity.inputHandler.onToggleUpperOverlay();
+        Objects.requireNonNull(parentActivity).inputHandler.onToggleUpperOverlay();
         return false;
     }
 }

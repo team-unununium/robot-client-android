@@ -19,22 +19,33 @@
 package io.github.unununium.util;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.media.MediaCodec;
 import android.util.AttributeSet;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.common.io.ByteBufferSeekableByteChannel;
+import org.jcodec.common.model.Picture;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import io.github.unununium.R;
 
+import static android.graphics.Bitmap.Config.ARGB_8888;
+
 /** A custom SurfaceView to draw footage from the latest frame. **/
 public class CameraSurfaceView extends SurfaceView {
-    private MediaCodec h264Decoder;
-
-    private static final int FPS = 30;
-    private static final String VIDEO_MIME = "video/h264";
+    public double bufferDuration = 0.4;
+    public int videoWidth = 1280;
+    public int videoHeight = 720;
+    public ArrayList<Bitmap> currentFrames = new ArrayList<>();
+    private static final int FPS = 60;
 
     private boolean threadRunning = false;
     private final Thread updateThread = new Thread(){
@@ -68,13 +79,7 @@ public class CameraSurfaceView extends SurfaceView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        try {
-            h264Decoder = MediaCodec.createDecoderByType(VIDEO_MIME);
-            updateThread.start();
-        } catch (IOException e) {
-            Toast.makeText(getContext(), R.string.error_h264_not_supported, Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
+        updateThread.start();
     }
 
     public void terminate() {
@@ -84,11 +89,47 @@ public class CameraSurfaceView extends SurfaceView {
 
     public void setVideo(byte[] video) {
         // TODO: Set media format
-        h264Decoder.configure(null, getHolder().getSurface(), null, 0);
+        ByteBuffer videoBuffer = ByteBuffer.wrap(video);
+        ByteBufferSeekableByteChannel channel = null;
+        try {
+            channel = new ByteBufferSeekableByteChannel(videoBuffer, video.length);
+            FrameGrab fg = FrameGrab.createFrameGrab(channel);
+            fg.getNativeFrame();
+        } catch (IOException | JCodecException e) {
+            Toast.makeText(getContext(), R.string.error_buffer_parse, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        } finally {
+            if (channel != null) {
+                try {
+                    channel.close();
+                } catch (IOException e) {
+                    Toast.makeText(getContext(), R.string.error_buffer_parse, Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
+    }
+
+    public static Bitmap toBitmap(@NotNull Picture src) {
+        Bitmap dst = Bitmap.createBitmap(src.getWidth(), src.getHeight(), ARGB_8888);
+        toBitmap(src, dst);
+        return dst;
+    }
+
+    public static void toBitmap(@NotNull Picture src, Bitmap dst) {
+        byte[] srcData = src.getPlaneData(0);
+        int[] packed = new int[src.getWidth() * src.getHeight()];
+
+        for (int i = 0, dstOff = 0, srcOff = 0; i < src.getHeight(); i++) {
+            for (int j = 0; j < src.getWidth(); j++, dstOff++, srcOff += 3) {
+                packed[dstOff] = (srcData[srcOff] << 16) | (srcData[srcOff + 1] << 8) | srcData[srcOff + 2];
+            }
+        }
+        dst.setPixels(packed, 0, src.getWidth(), 0, 0, src.getWidth(), src.getHeight());
     }
 }

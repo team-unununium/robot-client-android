@@ -36,7 +36,7 @@ public class ConnectionParameters {
 
     State state = State.DISCONNECTED;
     boolean isOperator = false;
-    final String guid = UUID.randomUUID().toString();
+    String guid = UUID.randomUUID().toString();
     double temperature = 0;
     double humidity = 0;
     double frontObstacle = -1;
@@ -130,5 +130,17 @@ public class ConnectionParameters {
 
     public float getRobotRotation() {
         return robotRotation;
+    }
+
+    public double getBufferDuration() {
+        return bufferDuration;
+    }
+
+    public int getVideoHeight() {
+        return videoHeight;
+    }
+
+    public int getVideoWidth() {
+        return videoWidth;
     }
 }

@@ -215,6 +215,7 @@
         android:text="@string/default_num"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_camera_x"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_camera_x" />
 
@@ -225,6 +226,7 @@
         android:text="@string/default_num"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_camera_y"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_camera_y" />
 
@@ -255,6 +257,7 @@
         android:text="@string/default_num"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_x"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_x" />
 
@@ -265,6 +268,7 @@
         android:text="@string/default_num"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_robot_y"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_robot_y" />
 

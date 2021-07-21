@@ -61,6 +61,10 @@ public class ValueHandler {
 
     public void onStreamInfoReceived() {
         parent.runOnUiThread(() -> {
+            CameraSurfaceView surfaceView = parent.findViewById(R.id.m1_playerview);
+            surfaceView.bufferDuration = parent.remoteParams.getBufferDuration();
+            surfaceView.videoWidth = parent.remoteParams.getVideoWidth();
+            surfaceView.videoHeight = parent.remoteParams.getVideoHeight();
             // TODO: Handle stream info receiving
             switch (parent.localParams.getCurrentOverlay()) {
                 case TYPE_DIAGNOSTICS:
@@ -89,11 +93,13 @@ public class ValueHandler {
                     targetView = parent.currentFragment.requireView().findViewById(R.id.overlay_icon_disconnected);
                     targetView.setVisibility(currentState == ConnectionParameters.State.CONNECTED ? View.INVISIBLE : View.GONE);
                     if (currentState != ConnectionParameters.State.CONNECTED) blinkImage(targetView);
+                    else targetView.clearAnimation();
                     break;
                 case TYPE_NORMAL_TEXT:
                     targetView = parent.currentFragment.requireView().findViewById(R.id.overlay_text_disconnected);
                     targetView.setVisibility(currentState == ConnectionParameters.State.CONNECTED ? View.INVISIBLE : View.GONE);
                     if (currentState != ConnectionParameters.State.CONNECTED) blinkImage(targetView);
+                    else targetView.clearAnimation();
                     break;
                 default:
                     break;
@@ -133,26 +139,33 @@ public class ValueHandler {
 
     public void onMovementChanged() {
         parent.runOnUiThread(() -> {
-            switch (parent.localParams.getCurrentOverlay()) {
-                case TYPE_DIAGNOSTICS:
-                    if (!parent.remoteParams.isMoving()) ((TextView) parent
-                            .findViewById(R.id.overlay_diag_velocity)).setText(R.string.velocity_stopped);
-                    else onVelocityChanged();
-                case TYPE_NORMAL_ICON:
-                    parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving)
-                            .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
-                    if (parent.remoteParams.isMoving()) blinkImage(
-                            parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving));
-                    break;
-                case TYPE_NORMAL_TEXT:
-                    parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving)
-                            .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
-                    if (parent.remoteParams.isMoving()) blinkImage(
-                            parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving));
-                    break;
-                case TYPE_SETTINGS:
-                case TYPE_NONE:
-                    break;
+            if (parent.currentFragment != null && parent.currentFragment.getView() != null) {
+                switch (parent.localParams.getCurrentOverlay()) {
+                    case TYPE_DIAGNOSTICS:
+                        if (!parent.remoteParams.isMoving()) ((TextView) parent
+                                .findViewById(R.id.overlay_diag_velocity)).setText(R.string.velocity_stopped);
+                        else onVelocityChanged();
+                        break;
+                    case TYPE_NORMAL_ICON:
+                        parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving)
+                                .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
+                        if (parent.remoteParams.isMoving()) blinkImage(
+                                parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving));
+                        else
+                            parent.currentFragment.requireView().findViewById(R.id.overlay_icon_moving).clearAnimation();
+                        break;
+                    case TYPE_NORMAL_TEXT:
+                        parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving)
+                                .setVisibility(parent.remoteParams.isMoving() ? View.VISIBLE : View.INVISIBLE);
+                        if (parent.remoteParams.isMoving()) blinkImage(
+                                parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving));
+                        else
+                            parent.currentFragment.requireView().findViewById(R.id.overlay_text_moving).clearAnimation();
+                        break;
+                    case TYPE_SETTINGS:
+                    case TYPE_NONE:
+                        break;
+                }
             }
         });
     }
@@ -173,6 +186,7 @@ public class ValueHandler {
     }
 
     public void onCameraRotationChanged() {
+        if (parent.currentFragment != null && parent.currentFragment.getView() != null)
         parent.runOnUiThread(() -> {
             if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS) {
                 ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_camera_x))
@@ -182,6 +196,7 @@ public class ValueHandler {
     }
 
     public void onRotationChanged() {
+        if (parent.currentFragment.getView() != null)
         parent.runOnUiThread(() -> {
             if (parent.localParams.getCurrentOverlay() == Constants.OverlayType.TYPE_DIAGNOSTICS) {
                 ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_robot_x))

@@ -26,6 +26,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
     public ServerConnection serverConnection = null;
     private boolean doubleBackToExitPressedOnce = false;
     private final float[] rotationVector = new float[4];
+    private float lastY = 0;
 
     private static final float MAX_PHONE_ROTATION = 100; // Max possible rotation of phone on one side (in degrees)
     private static final float MAX_PHONE_ROTATION_RADS = (float) (MAX_PHONE_ROTATION * Math.PI / 180);
@@ -72,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
         public void onSensorChanged(@NotNull SensorEvent event) {
+            if (!(remoteParams.isOperator() && remoteParams.getState() == ConnectionParameters.State.CONNECTED)) return;
+
             LocalParameters.ControlMode phoneControlMode = localParams.phoneControlMode;
             // Source from Android tutorial
             SensorManager.getQuaternionFromVector(rotationVector, event.values);
@@ -181,26 +185,87 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** Delegates the movements of the controller to the input handler. **/
+    /** Delegates the movements of the controller to the input handler.
+     * From https://developer.android.com/training/game-controllers/controller-input#joystick **/
     @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         super.onGenericMotionEvent(event);
         if (localParams.externalControllerEnabled &&
-                GeneralFunctions.deviceIsController(event.getDevice()) && remoteParams.isOperator()) {
-            // TODO: Handle controller motion
+                GeneralFunctions.deviceIsController(event.getDevice()) && remoteParams.isOperator()
+                && event.getAction() == MotionEvent.ACTION_MOVE) {
+            // Process all historical movement samples in the batch
+            final int historySize = event.getHistorySize();
+
+            // Process the movements starting from the
+            // earliest historical position in the batch
+            for (int i = 0; i < historySize; i++) {
+                // Process the event at historical position i
+                processJoystickInput(event, i);
+            }
+
+            // Process the current movement sample in the batch (position -1)
+            processJoystickInput(event, -1);
             return true;
         } else {
             return false;
         }
     }
 
+    /** Process the input from the joystick.
+     * From https://developer.android.com/training/game-controllers/controller-input#joystick **/
+    private void processJoystickInput(@NotNull MotionEvent event,
+                                      int historyPos) {
+
+        InputDevice inputDevice = event.getDevice();
+
+        float currentY = event.getAxisValue(MotionEvent.AXIS_HAT_Y);
+        if (currentY != lastY) {
+            lastY = currentY;
+            int moving = currentY == 0 ? remoteParams.getVelocity() : currentY < 0 ?
+                    (remoteParams.getVelocity() == 3 ? 3 : remoteParams.getVelocity() + 1) :
+                    (remoteParams.getVelocity() == 1 ? 1 :remoteParams.getVelocity() - 1);
+            serverConnection.setVelocity(moving);
+        }
+
+        // Calculate the horizontal distance to move by
+        // using the input value from one of these physical controls:
+        // the left control stick, hat axis, or the right control stick.
+        float x = getCenteredAxis(event, inputDevice,
+                MotionEvent.AXIS_X, historyPos);
+        if (x == 0) {
+            x = getCenteredAxis(event, inputDevice,
+                    MotionEvent.AXIS_HAT_X, historyPos);
+        }
+        if (x == 0) {
+            x = getCenteredAxis(event, inputDevice,
+                    MotionEvent.AXIS_Z, historyPos);
+        }
+
+        // Calculate the vertical distance to move by
+        // using the input value from one of these physical controls:
+        // the left control stick, hat switch, or the right control stick.
+        float y = getCenteredAxis(event, inputDevice,
+                MotionEvent.AXIS_Y, historyPos);
+        if (y == 0) {
+            y = getCenteredAxis(event, inputDevice,
+                    MotionEvent.AXIS_HAT_Y, historyPos);
+        }
+        if (y == 0) {
+            y = getCenteredAxis(event, inputDevice,
+                    MotionEvent.AXIS_RZ, historyPos);
+        }
+        double magnitude = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        // TODO: Get velocity from magnitude and direction
+    }
+
     /** Delegates the inputs by the controller to the input handler. **/
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         super.onKeyDown(keyCode, event);
+
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             onBackPressed();
-        } else if (!GeneralFunctions.deviceIsController(event.getDevice())) {
+        } else if (!GeneralFunctions.deviceIsController(event.getDevice()) || !localParams.externalControllerEnabled) {
             return false;
         }
         switch (keyCode) {
@@ -317,5 +382,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
         super.onPointerCaptureChanged(hasCapture);
+    }
+
+    /** Gets the centered axis of a controller.
+     * From https://developer.android.com/training/game-controllers/controller-input#joystick **/
+    private static float getCenteredAxis(@NotNull MotionEvent event,
+                                         @NotNull InputDevice device, int axis, int historyPos) {
+        final InputDevice.MotionRange range =
+                device.getMotionRange(axis, event.getSource());
+
+        // A joystick at rest does not always report an absolute position of
+        // (0,0). Use the getFlat() method to determine the range of values
+        // bounding the joystick axis center.
+        if (range != null) {
+            final float flat = range.getFlat();
+            final float value =
+                    historyPos < 0 ? event.getAxisValue(axis):
+                            event.getHistoricalAxisValue(axis, historyPos);
+
+            // Ignore axis values that are within the 'flat' region of the
+            // joystick axis center.
+            if (Math.abs(value) > flat) {
+                return value;
+            }
+        }
+        return 0;
     }
 }

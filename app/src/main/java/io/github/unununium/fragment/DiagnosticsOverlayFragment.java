@@ -32,6 +32,10 @@ import io.github.unununium.R;
 import io.github.unununium.activity.MainActivity;
 
 public class DiagnosticsOverlayFragment extends OverlayFragment {
+    public DiagnosticsOverlayFragment() {
+
+    }
+
     public DiagnosticsOverlayFragment(MainActivity parentActivity, boolean initIsDay) {
         super(parentActivity, initIsDay);
     }
@@ -59,9 +63,9 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
         super.nightImageResList = new int[]{ R.drawable.ic_camera_50_night, R.drawable.ic_settings_50_night };
         super.operatorOnlyList = new int[]{ R.id.overlay_diag_velocity, R.id.overlay_diag_start_moving, R.id.overlay_diag_night_mode,
             R.id.overlay_diag_external_controller, R.id.overlay_diag_phone_mode, R.id.overlay_diag_last_camera_rotation,
-            R.id.overlay_diag_camera_x, R.id.overlay_diag_camera_y, R.id.overlay_diag_camera_z,
-            R.id.overlay_diag_last_robot_rotation, R.id.overlay_diag_robot_x, R.id.overlay_diag_robot_y,
-            R.id.overlay_diag_robot_z };
+            R.id.overlay_diag_camera_x, R.id.overlay_diag_last_robot_rotation, R.id.overlay_diag_robot_x };
+        // R.id.overlay_diag_camera_y, R.id.overlay_diag_camera_z
+        // R.id.overlay_diag_robot_y, R.id.overlay_diag_robot_z
     }
 
     /** Set the onClickListeners for the view. **/
@@ -116,7 +120,6 @@ public class DiagnosticsOverlayFragment extends OverlayFragment {
                         .twoDP.format(parentActivity.remoteParams.getRobotRotation())));
         ((TextView) returnView.findViewById(R.id.overlay_diag_velocity))
                 .setText(String.format("Velocity: %s", parentActivity.remoteParams.isMoving() ?
-                        String.format(Locale.ENGLISH, "Velocity: %d",
-                                parentActivity.remoteParams.getVelocity()) : "Stopped"));
+                        parentActivity.remoteParams.getVelocity() : "Stopped"));
     }
 }
