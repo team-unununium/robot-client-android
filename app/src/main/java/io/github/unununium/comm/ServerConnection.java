@@ -67,11 +67,6 @@ public class ServerConnection {
         parent.valueHandler.onDataReceived();
     };
 
-    private final Emitter.Listener onStreamInfoReceived = args -> {
-        parseInfo((JSONObject) args[0]);
-        parent.valueHandler.onStreamInfoReceived();
-    };
-
     private final Emitter.Listener onTestClientReceived = args -> {
         if (parent.remoteParams.isOperator) {
             onConnectionFailure("testClient event received for operator");
@@ -93,7 +88,7 @@ public class ServerConnection {
 
     private final Emitter.Listener onVideoBufferReceived = args ->
             parent.runOnUiThread(() -> ((CameraSurfaceView)
-                    parent.findViewById(R.id.m1_playerview)).setVideo((byte[]) args[0]));
+                    parent.findViewById(R.id.m1_playerview)).setCurrentImage((byte[]) args[0]));
 
     public ServerConnection(MainActivity parent) {
         this.parent = parent;
@@ -163,7 +158,6 @@ public class ServerConnection {
             socket.on("testOperator", onTestOperatorReceived);
             socket.on("testRobot", onTestRobotReceived);
             socket.on("clientSendVideo", onVideoBufferReceived);
-            socket.on("clientRequestInfo", onStreamInfoReceived);
             socket.connect();
         }
         IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
@@ -179,7 +173,6 @@ public class ServerConnection {
             socket.off("testOperator", onTestOperatorReceived);
             socket.off("testRobot", onTestRobotReceived);
             socket.off("clientSendVideo", onVideoBufferReceived);
-            socket.off("clientRequestInfo", onStreamInfoReceived);
             setState(ConnectionParameters.State.SOCKET_DISCONNECTED);
         }
         try {
@@ -301,25 +294,6 @@ public class ServerConnection {
         }
         try {
             parent.remoteParams.lpg = object.getDouble("lpg");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void parseInfo(@NotNull JSONObject object) {
-        // Individual try statements allow for incomplete objects to be parsed
-        try {
-            parent.remoteParams.bufferDuration = object.getDouble("bufferDuration");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            parent.remoteParams.videoWidth = object.getInt("videoWidth");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        try {
-            parent.remoteParams.videoHeight = object.getInt("videoHeight");
         } catch (JSONException e) {
             e.printStackTrace();
         }

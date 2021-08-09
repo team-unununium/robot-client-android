@@ -20,17 +20,27 @@ package io.github.unununium.util;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.os.Environment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.widget.Toast;
 
 import org.jcodec.api.FrameGrab;
 import org.jcodec.api.JCodecException;
+import org.jcodec.api.UnsupportedFormatException;
 import org.jcodec.common.io.ByteBufferSeekableByteChannel;
+import org.jcodec.common.io.FileChannelWrapper;
 import org.jcodec.common.model.Picture;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -41,28 +51,6 @@ import static android.graphics.Bitmap.Config.ARGB_8888;
 
 /** A custom SurfaceView to draw footage from the latest frame. **/
 public class CameraSurfaceView extends SurfaceView {
-    public double bufferDuration = 0.4;
-    public int videoWidth = 1280;
-    public int videoHeight = 720;
-    public ArrayList<Bitmap> currentFrames = new ArrayList<>();
-    private static final int FPS = 60;
-
-    private boolean threadRunning = false;
-    private final Thread updateThread = new Thread(){
-        @SuppressWarnings("BusyWait")
-        @Override
-        public void run() {
-            threadRunning = true;
-            while (threadRunning) {
-                // TODO: Update data
-                try {
-                    sleep(1000 / FPS);
-                } catch (InterruptedException ignored) {
-
-                }
-            }
-        }
-    };
 
     public CameraSurfaceView(Context context) {
         super(context);
@@ -79,57 +67,23 @@ public class CameraSurfaceView extends SurfaceView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        updateThread.start();
     }
 
-    public void terminate() {
-        threadRunning = false;
-        updateThread.interrupt();
-    }
-
-    public void setVideo(byte[] video) {
-        // TODO: Set media format
-        ByteBuffer videoBuffer = ByteBuffer.wrap(video);
-        ByteBufferSeekableByteChannel channel = null;
-        try {
-            channel = new ByteBufferSeekableByteChannel(videoBuffer, video.length);
-            FrameGrab fg = FrameGrab.createFrameGrab(channel);
-            fg.getNativeFrame();
-        } catch (IOException | JCodecException e) {
-            Toast.makeText(getContext(), R.string.error_buffer_parse, Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        } finally {
-            if (channel != null) {
-                try {
-                    channel.close();
-                } catch (IOException e) {
-                    Toast.makeText(getContext(), R.string.error_buffer_parse, Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
-            }
+    public void setCurrentImage(byte[] buffer) {
+        Canvas canvas = getHolder().lockCanvas();
+        if (canvas != null) {
+            Bitmap currentBitmap = BitmapFactory.decodeByteArray(buffer, 0, buffer.length);
+            float ar = canvas.getHeight() * 1.0f / currentBitmap.getScaledHeight(canvas);
+            Bitmap rescaledBitmap = Bitmap.createScaledBitmap(currentBitmap,
+                    (int) (ar * currentBitmap.getScaledWidth(canvas)), getHeight(), false);
+            float left = (canvas.getWidth() - rescaledBitmap.getScaledWidth(canvas)) / 2f;
+            canvas.drawBitmap(rescaledBitmap, left, 0, new Paint());
+            getHolder().unlockCanvasAndPost(canvas);
         }
     }
 
     @Override
     public void draw(Canvas canvas) {
         super.draw(canvas);
-    }
-
-    public static Bitmap toBitmap(@NotNull Picture src) {
-        Bitmap dst = Bitmap.createBitmap(src.getWidth(), src.getHeight(), ARGB_8888);
-        toBitmap(src, dst);
-        return dst;
-    }
-
-    public static void toBitmap(@NotNull Picture src, Bitmap dst) {
-        byte[] srcData = src.getPlaneData(0);
-        int[] packed = new int[src.getWidth() * src.getHeight()];
-
-        for (int i = 0, dstOff = 0, srcOff = 0; i < src.getHeight(); i++) {
-            for (int j = 0; j < src.getWidth(); j++, dstOff++, srcOff += 3) {
-                packed[dstOff] = (srcData[srcOff] << 16) | (srcData[srcOff + 1] << 8) | srcData[srcOff + 2];
-            }
-        }
-        dst.setPixels(packed, 0, src.getWidth(), 0, 0, src.getWidth(), src.getHeight());
     }
 }

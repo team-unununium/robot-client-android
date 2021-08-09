@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         serverConnection.terminateConnection();
-        ((CameraSurfaceView) findViewById(R.id.m1_playerview)).terminate();
     }
 
     /** Set the top bar of the screen to be hidden. **/

@@ -44,13 +44,15 @@ public class ValueHandler {
 
     public void onDataReceived() {
         parent.runOnUiThread(() -> {
-            // TODO: Handle data receiving
             switch (parent.localParams.getCurrentOverlay()) {
                 case TYPE_DIAGNOSTICS:
+                    refreshDiagnosticsPage();
                     break;
                 case TYPE_NORMAL_ICON:
+                    refreshNormalIconPage();
                     break;
                 case TYPE_NORMAL_TEXT:
+                    refreshNormalTextPage();
                     break;
                 case TYPE_SETTINGS:
                 case TYPE_NONE:
@@ -59,25 +61,99 @@ public class ValueHandler {
         });
     }
 
-    public void onStreamInfoReceived() {
-        parent.runOnUiThread(() -> {
-            CameraSurfaceView surfaceView = parent.findViewById(R.id.m1_playerview);
-            surfaceView.bufferDuration = parent.remoteParams.getBufferDuration();
-            surfaceView.videoWidth = parent.remoteParams.getVideoWidth();
-            surfaceView.videoHeight = parent.remoteParams.getVideoHeight();
-            // TODO: Handle stream info receiving
-            switch (parent.localParams.getCurrentOverlay()) {
-                case TYPE_DIAGNOSTICS:
-                    break;
-                case TYPE_NORMAL_ICON:
-                    break;
-                case TYPE_NORMAL_TEXT:
-                    break;
-                case TYPE_SETTINGS:
-                case TYPE_NONE:
-                    break;
-            }
-        });
+    public void refreshDiagnosticsPage() {
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_temp))
+                .setText(String.format("%s °C", parent.localParams.oneDP.format(parent.remoteParams.getTemperature())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_humidity))
+                .setText(String.format("%s %%", parent.localParams.oneDP.format(parent.remoteParams.getHumidity() % 100)));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_front_obstacle))
+                .setText(String.format("Front: %s mm", parent.localParams.twoDP.format(parent.remoteParams.getFrontObstacle())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_back_obstacle))
+                .setText(String.format("Back: %s mm", parent.localParams.twoDP.format(parent.remoteParams.getBackObstacle())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_co_level))
+                .setText(String.format("CO: %s", parent.localParams.fourDP.format(parent.remoteParams.getCo())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_ch4_level))
+                .setText(String.format("CH4: %s", parent.localParams.fourDP.format(parent.remoteParams.getCh4())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_h2_level))
+                .setText(String.format("H2: %s", parent.localParams.fourDP.format(parent.remoteParams.getH2())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_diag_lpg_level))
+                .setText(String.format("LPG: %s", parent.localParams.fourDP.format(parent.remoteParams.getLpg())));
+    }
+
+    public void refreshNormalIconPage() {
+        int tempResIcon = parent.localParams.isDay ?
+                (parent.remoteParams.getTemperature() < parent.localParams.lowerTempBound ?
+                        R.drawable.ic_temp_cold_day : parent.remoteParams.getTemperature() >
+                        parent.localParams.upperTempBound ? R.drawable.ic_temp_hot_day :
+                        R.drawable.ic_temp_default_day) :
+                (parent.remoteParams.getTemperature() < parent.localParams.lowerTempBound ?
+                R.drawable.ic_temp_cold_night : parent.remoteParams.getTemperature() >
+                parent.localParams.upperTempBound ? R.drawable.ic_temp_hot_night :
+                R.drawable.ic_temp_default_night);
+        ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_temp_icon)).setImageResource(tempResIcon);
+        int humidityResIcon = parent.localParams.isDay ?
+                (parent.remoteParams.getHumidity() < parent.localParams.lowerHumidityBound ?
+                        R.drawable.ic_humidity_low_day : parent.remoteParams.getHumidity() >
+                        parent.localParams.upperHumidityBound ? R.drawable.ic_humidity_high_day :
+                        R.drawable.ic_humidity_medium_day) :
+                (parent.remoteParams.getHumidity() < parent.localParams.lowerHumidityBound ?
+                        R.drawable.ic_humidity_low_night : parent.remoteParams.getHumidity() >
+                        parent.localParams.upperHumidityBound ? R.drawable.ic_humidity_high_night :
+                        R.drawable.ic_humidity_medium_night);
+        ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_humidity_icon)).setImageResource(humidityResIcon);
+
+        parent.currentFragment.requireView().findViewById(R.id.overlay_obstacle_front_icon)
+                .setVisibility(parent.remoteParams.getFrontObstacle() < parent.localParams.frontObstacleAmount ?
+                        View.VISIBLE : View.GONE);
+        parent.currentFragment.requireView().findViewById(R.id.overlay_obstacle_back_icon)
+                .setVisibility(parent.remoteParams.getBackObstacle() < parent.localParams.rearObstacleAmount ?
+                        View.VISIBLE : View.GONE);
+        parent.currentFragment.requireView().findViewById(R.id.overlay_obstacle_icon)
+                .setVisibility((parent.remoteParams.getFrontObstacle() < parent.localParams.frontObstacleAmount
+                        || parent.remoteParams.getBackObstacle() < parent.localParams.rearObstacleAmount) ?
+                        View.VISIBLE : View.GONE);
+
+        boolean shouldShowCoIcon = parent.remoteParams.getCo() > parent.localParams.coWarnLevel;
+        parent.currentFragment.requireView().findViewById(R.id.overlay_co_icon)
+                .setVisibility(shouldShowCoIcon ? View.VISIBLE : View.GONE);
+        if (shouldShowCoIcon) ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_co_icon))
+                .setImageResource(parent.localParams.isDay ? R.drawable.ic_gas_co_day : R.drawable.ic_gas_co_night);
+
+        boolean shouldShowCh4Icon = parent.remoteParams.getCh4() > parent.localParams.ch4WarnLevel;
+        parent.currentFragment.requireView().findViewById(R.id.overlay_ch4_icon)
+                .setVisibility(shouldShowCh4Icon ? View.VISIBLE : View.GONE);
+        if (shouldShowCh4Icon) ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_ch4_icon))
+                .setImageResource(parent.localParams.isDay ? R.drawable.ic_gas_ch4_day : R.drawable.ic_gas_ch4_night);
+
+        boolean shouldShowH2Icon = parent.remoteParams.getH2() > parent.localParams.h2WarnLevel;
+        parent.currentFragment.requireView().findViewById(R.id.overlay_h2_icon)
+                .setVisibility(shouldShowH2Icon ? View.VISIBLE : View.GONE);
+        if (shouldShowH2Icon) ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_h2_icon))
+                .setImageResource(parent.localParams.isDay ? R.drawable.ic_gas_h2_day : R.drawable.ic_gas_h2_night);
+
+        boolean shouldShowLpgIcon = parent.remoteParams.getLpg() > parent.localParams.lpgWarnLevel;
+        parent.currentFragment.requireView().findViewById(R.id.overlay_lpg_icon)
+                .setVisibility(shouldShowCoIcon ? View.VISIBLE : View.GONE);
+        if (shouldShowLpgIcon) ((ImageView) parent.currentFragment.requireView().findViewById(R.id.overlay_lpg_icon))
+                .setImageResource(parent.localParams.isDay ? R.drawable.ic_gas_lpg_day : R.drawable.ic_gas_lpg_night);
+    }
+
+    public void refreshNormalTextPage() {
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_temp_text))
+                .setText(String.format("%s °C", parent.localParams.oneDP.format(parent.remoteParams.getTemperature())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_humidity_text))
+                .setText(String.format("%s %%", parent.localParams.oneDP.format(parent.remoteParams.getHumidity() % 100)));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_front_obstacle_text))
+                .setText(String.format("Front: %s mm", parent.localParams.twoDP.format(parent.remoteParams.getFrontObstacle())));
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_back_obstacle_text))
+                .setText(String.format("Back: %s mm", parent.localParams.twoDP.format(parent.remoteParams.getBackObstacle())));
+        String gasString = "";
+        if (parent.remoteParams.getCo() > parent.localParams.coWarnLevel) gasString += "CO, ";
+        if (parent.remoteParams.getCh4() > parent.localParams.ch4WarnLevel) gasString += "CH4, ";
+        if (parent.remoteParams.getH2() > parent.localParams.h2WarnLevel) gasString += "H2, ";
+        if (parent.remoteParams.getLpg() > parent.localParams.lpgWarnLevel) gasString += "LPG";
+        if (gasString.endsWith(", ")) gasString = gasString.substring(0, gasString.length() - 3);
+        ((TextView) parent.currentFragment.requireView().findViewById(R.id.overlay_gas_text)).setText(gasString);
     }
 
     public void onStateChanged() {

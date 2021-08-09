@@ -87,7 +87,8 @@ public class NormalOverlayFragment extends OverlayFragment {
         int res = isText ? R.layout.fragment_normal_text_overlay : R.layout.fragment_normal_icon_overlay;
         View returnView = inflater.inflate(res, container, false);
         setViewListeners(returnView);
-        setOperatorViewsVisibility(returnView, parentActivity.remoteParams.isOperator());
+        setOperatorViewsVisibility(returnView, parentActivity.remoteParams != null
+                && parentActivity.remoteParams.isOperator());
         return returnView;
     }
 
@@ -111,6 +112,6 @@ public class NormalOverlayFragment extends OverlayFragment {
     @Override
     public void swapColour(boolean isDay) {
         super.swapColour(isDay);
-        // TODO: Swap colours for temp and humidity
+        if (!isText) parentActivity.valueHandler.refreshNormalIconPage();
     }
 }
