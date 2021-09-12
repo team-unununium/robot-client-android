@@ -46,7 +46,6 @@ import io.github.unununium.comm.ServerConnection;
 import io.github.unununium.fragment.DiagnosticsOverlayFragment;
 import io.github.unununium.fragment.NormalOverlayFragment;
 import io.github.unununium.fragment.SettingsOverlayFragment;
-import io.github.unununium.util.CameraSurfaceView;
 import io.github.unununium.util.Constants;
 import io.github.unununium.util.FragmentOnBackPressed;
 import io.github.unununium.util.GeneralFunctions;
@@ -70,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private static final float MAX_PHONE_ROTATION_RADS = (float) (MAX_PHONE_ROTATION * Math.PI / 180);
     private static final float MAX_ROBOT_ROTATION_RADS = (float) 0.8;
     private static final float MAX_CAMERA_ROTATION_RADS = (float) 0.8;
+    private static final float ROBOT_ROTATION_THRESHOLD = (float) 0.0125 * MAX_ROBOT_ROTATION_RADS;
+    private static final float CAMERA_ROTATION_THRESHOLD = (float) 0.0125 * MAX_CAMERA_ROTATION_RADS;
 
     private final SensorEventListener sensorListener = new SensorEventListener() {
         @Override
@@ -86,11 +87,13 @@ public class MainActivity extends AppCompatActivity {
             switch (phoneControlMode) {
                 case ROBOT:
                     actualSensorChange = (yRotation / MAX_PHONE_ROTATION_RADS) * MAX_ROBOT_ROTATION_RADS;
-                    serverConnection.setRobotRotation(actualSensorChange);
+                    if (actualSensorChange > ROBOT_ROTATION_THRESHOLD || actualSensorChange < (-1 * ROBOT_ROTATION_THRESHOLD))
+                        serverConnection.setRobotRotation(actualSensorChange);
                     break;
                 case CAMERA:
                     actualSensorChange = (yRotation / MAX_CAMERA_ROTATION_RADS) * MAX_ROBOT_ROTATION_RADS;
-                    serverConnection.setCameraRotation(actualSensorChange);
+                    if (actualSensorChange > CAMERA_ROTATION_THRESHOLD ||  actualSensorChange < (-1 * CAMERA_ROTATION_THRESHOLD))
+                        serverConnection.setCameraRotation(actualSensorChange);
                     break;
                 case DISABLED:
                     break;
@@ -282,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
                 inputHandler.onToggleUI();
                 break;
             case KeyEvent.KEYCODE_BUTTON_B:
-                // TODO: Toggle camera night mode
                 break;
             case KeyEvent.KEYCODE_DPAD_DOWN:
             case KeyEvent.KEYCODE_DPAD_DOWN_LEFT:

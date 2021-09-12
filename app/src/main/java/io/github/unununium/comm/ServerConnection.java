@@ -325,7 +325,7 @@ public class ServerConnection {
         JSONObject obj = new JSONObject();
         try {
             obj.put("velocity", velocity);
-            if (socket != null) socket.emit("robotChangeSpeed", obj);
+            if (socket != null) socket.emit("operatorChangeSpeed", obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -336,9 +336,9 @@ public class ServerConnection {
         parent.remoteParams.isMoving = moving;
         if (socket != null) {
             if (moving) {
-                socket.emit("startMoving");
+                socket.emit("operatorStartMoving");
             } else {
-                socket.emit("stopMoving");
+                socket.emit("operatorStopMoving");
             }
         }
         parent.valueHandler.onMovementChanged();
@@ -351,7 +351,7 @@ public class ServerConnection {
         JSONObject obj = new JSONObject();
         try {
             obj.put("velocity", rotationString);
-            if (socket != null) socket.emit("robotRotateCamera", obj);
+            if (socket != null) socket.emit("operatorRotateCamera", obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -365,7 +365,7 @@ public class ServerConnection {
         JSONObject obj = new JSONObject();
         try {
             obj.put("velocity", rotationString);
-            if (socket != null) socket.emit("robotRotate", obj);
+            if (socket != null) socket.emit("operatorRotate", obj);
         } catch (JSONException e) {
             e.printStackTrace();
         }

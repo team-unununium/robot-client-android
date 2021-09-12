@@ -59,6 +59,7 @@ public class ValueHandler {
                     break;
             }
         });
+        onStateChanged();
     }
 
     public void refreshDiagnosticsPage() {

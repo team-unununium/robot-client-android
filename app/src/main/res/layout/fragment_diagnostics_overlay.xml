@@ -165,6 +165,7 @@
         android:text="@string/default_camera_night_mode"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="@+id/overlay_diag_app_mode"
         app:layout_constraintTop_toBottomOf="@+id/overlay_diag_app_mode" />
 

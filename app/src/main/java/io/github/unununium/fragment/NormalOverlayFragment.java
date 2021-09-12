@@ -113,5 +113,6 @@ public class NormalOverlayFragment extends OverlayFragment {
     public void swapColour(boolean isDay) {
         super.swapColour(isDay);
         if (!isText) parentActivity.valueHandler.refreshNormalIconPage();
+        parentActivity.valueHandler.onStateChanged();
     }
 }

@@ -123,7 +123,6 @@ public class SettingsOverlayFragment extends PreferenceFragmentCompat implements
                 Objects.requireNonNull(externalControllerPref).isChecked();
         SwitchPreference startMovingPref = findPreference("pref_start_moving");
         parentActivity.serverConnection.setMoving(Objects.requireNonNull(startMovingPref).isChecked());
-        // TODO: Night mode
     }
 
     private boolean switchPrefValueChanged(String key, boolean compare) {
